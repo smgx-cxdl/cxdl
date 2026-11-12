@@ -6,13 +6,15 @@
     <title>我的个人小站</title>
     <style>
         html { scroll-behavior: smooth; }
-        body { 
-            text-align: center; 
-            padding: 100px 16px 60px;
-            font-family: sans-serif; 
-            background: #f4f4f9; 
+        body {
+            text-align: center;
+            padding: 76px 16px 60px;
+            font-family: sans-serif;
+            background: #f4f4f9;
+            margin: 0;
         }
         h1 { color: #333; }
+        h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
 
@@ -35,6 +37,72 @@
             color: #444;
         }
 
+        /* 分页：同一时间只显示一个板块 */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* 顶部栏 */
+        #topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 10px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+            z-index: 100;
+        }
+        .iconbtn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: #eee;
+            color: #333;
+            font-size: 20px;
+            line-height: 40px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        #topTitle { flex: 1; text-align: left; color: #333; font-size: 16px; }
+
+        /* 侧边菜单 */
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .4);
+            display: none;
+            z-index: 300;
+        }
+        #overlay.open { display: block; }
+        #menu {
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            width: 70%;
+            max-width: 260px;
+            background: #fff;
+            transform: translateX(-100%);
+            transition: transform .25s ease;
+            z-index: 400;
+            text-align: left;
+            padding: 16px 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, .2);
+        }
+        #menu.open { transform: translateX(0); }
+        #menu .menuhead { padding: 4px 20px 12px; color: #999; font-size: 13px; }
+        #menu a {
+            display: block;
+            padding: 14px 20px;
+            color: #333;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        #menu a.current { background: #f0f0f7; font-weight: bold; }
+
         /* 回到顶部按钮 */
         #toTop {
             position: fixed;
@@ -44,37 +112,25 @@
             height: 44px;
             line-height: 44px;
             text-align: center;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, .55);
-            color: #fff;
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        /* 搜索图标（右上角） */
-        #searchBtn {
-            position: fixed;
-            top: 10px;
-            right: 12px;
-            width: 40px;
-            height: 40px;
             border: none;
             border-radius: 50%;
             background: rgba(0, 0, 0, .55);
             color: #fff;
-            font-size: 18px;
+            font-size: 20px;
+            padding: 0;
             cursor: pointer;
-            z-index: 100;
         }
 
-        /* 搜索栏 */
+        /* 搜索栏（盖在顶部栏上） */
         #searchBar {
             position: fixed;
             top: 0; left: 0; right: 0;
+            height: 52px;
+            box-sizing: border-box;
             display: none;
             align-items: center;
             gap: 6px;
-            padding: 8px 10px;
+            padding: 0 10px;
             background: #fff;
             box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
             z-index: 200;
@@ -106,13 +162,20 @@
 
         /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
-            body { padding-top: 40px; }
+            body { padding-top: 68px; }
         }
     </style>
 </head>
 <body>
-    <button id="searchBtn" aria-label="搜索">🔍</button>
+    <!-- 顶部栏：菜单、主页、标题、搜索 -->
+    <div id="topbar">
+        <button class="iconbtn" id="menuBtn" aria-label="菜单">☰</button>
+        <a class="iconbtn" id="homeBtn" href="#home" aria-label="主页">🏠</a>
+        <span id="topTitle">我的个人小站</span>
+        <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
+    </div>
 
+    <!-- 搜索栏 -->
     <div id="searchBar">
         <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
         <span id="count"></span>
@@ -121,43 +184,98 @@
         <button id="closeBar" aria-label="关闭">✕</button>
     </div>
 
-    <main id="content">
-        <h1>Hello, World! </h1>
+    <!-- 侧边菜单 -->
+    <div id="overlay"></div>
+    <nav id="menu">
+        <div class="menuhead">菜单</div>
+        <a href="#home" data-page="home">🏠 主页</a>
+        <a href="#other" data-page="other">📁 其它</a>
+    </nav>
 
-        <p class="verse">【圣经·传道书12章1节】<br>
-        你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
-        <p>陌生人，你好！</p>
-        <p>个人邮箱：smgxcxdl@163.com</p>
-        <figure>
-            <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
-            <figcaption>风景图片↑</figcaption>
-        </figure>
-        <p>无论怎么看，都是无聊的一生。</p>
-        <p>生れて、すみません。</p>
-        <p>Matrix</p>
-        <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
-        <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
-        <figure>
-            <img src="qwe.jpg" alt="星空草地" loading="lazy">
-            <figcaption>星空草地↑</figcaption>
-        </figure>
-        <p>安らぎを君に</p>
-        <p>命运迷人之处，在于意想不到的转折。</p>
+    <main>
+        <!-- 板块一：主页 -->
+        <section class="page" id="page-home">
+            <h1>Hello, World! </h1>
+
+            <p class="verse">【圣经·传道书12章1节】<br>
+            你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
+            <p>陌生人，你好！</p>
+            <p>个人邮箱：smgxcxdl@163.com</p>
+            <figure>
+                <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
+                <figcaption>风景图片</figcaption>
+            </figure>
+            <p>无论怎么看，都是无聊的一生。</p>
+            <p>生れて、すみません。</p>
+            <p>Matrix</p>
+            <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
+            <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
+            <figure>
+                <img src="qwe.jpg" alt="星空草地" loading="lazy">
+                <figcaption>星空草地</figcaption>
+            </figure>
+            <p>安らぎを君に</p>
+            <p>命运迷人之处，在于意想不到的转折。</p>
+        </section>
+
+        <!-- 板块二：其它（在这里放其它内容） -->
+        <section class="page" id="page-other">
+            <h2>其它</h2>
+            <p>这里放其它内容。</p>
+        </section>
     </main>
 
-    <a href="#" id="toTop" aria-label="回到顶部">↑</a>
+    <button id="toTop" aria-label="回到顶部">↑</button>
 
     <script>
     (function () {
-        var content = document.getElementById('content');
+        var pages = document.querySelectorAll('.page');
+        var menu = document.getElementById('menu');
+        var overlay = document.getElementById('overlay');
+        var menuLinks = menu.querySelectorAll('a');
         var bar = document.getElementById('searchBar');
         var btn = document.getElementById('searchBtn');
         var input = document.getElementById('q');
         var count = document.getElementById('count');
         var marks = [], cur = -1, lastQuery = '';
 
+        /* ---------- 菜单 ---------- */
+        function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
+        function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
+        document.getElementById('menuBtn').addEventListener('click', openMenu);
+        overlay.addEventListener('click', closeMenu);
+
+        /* ---------- 分页（按网址 # 后面的名字切换） ---------- */
+        function activePage() { return document.querySelector('.page.active'); }
+
+        function route() {
+            var name = location.hash.replace('#', '') || 'home';
+            var target = document.getElementById('page-' + name);
+            if (!target) { name = 'home'; target = document.getElementById('page-home'); }
+            for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+            target.classList.add('active');
+            for (var j = 0; j < menuLinks.length; j++) {
+                menuLinks[j].classList.toggle('current', menuLinks[j].getAttribute('data-page') === name);
+            }
+            closeMenu();
+            closeBar();
+            window.scrollTo(0, 0);
+        }
+        window.addEventListener('hashchange', route);
+
+        /* 点当前所在页面的链接时，网址不变，手动回顶并关菜单 */
+        function sameLinkClick() { closeMenu(); window.scrollTo(0, 0); }
+        document.getElementById('homeBtn').addEventListener('click', sameLinkClick);
+        for (var k = 0; k < menuLinks.length; k++) menuLinks[k].addEventListener('click', sameLinkClick);
+
+        document.getElementById('toTop').addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ---------- 搜索（只搜当前显示的板块） ---------- */
         function clearMarks() {
-            var olds = content.querySelectorAll('mark.hit');
+            var root = document.querySelector('main');
+            var olds = root.querySelectorAll('mark.hit');
             for (var i = 0; i < olds.length; i++) {
                 var m = olds[i], p = m.parentNode;
                 p.replaceChild(document.createTextNode(m.textContent), m);
@@ -170,8 +288,9 @@
             clearMarks();
             count.textContent = '';
             if (!q) return;
+            var root = activePage();
             var re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-            var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+            var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
             var nodes = [];
             while (walker.nextNode()) nodes.push(walker.currentNode);
             nodes.forEach(function (node) {
@@ -191,7 +310,7 @@
                 frag.appendChild(document.createTextNode(text.slice(last)));
                 node.parentNode.replaceChild(frag, node);
             });
-            marks = Array.prototype.slice.call(content.querySelectorAll('mark.hit'));
+            marks = Array.prototype.slice.call(root.querySelectorAll('mark.hit'));
         }
 
         function go(i) {
@@ -215,13 +334,12 @@
         }
 
         function openBar() {
+            closeMenu();
             bar.classList.add('open');
-            btn.style.display = 'none';
             input.focus();
         }
         function closeBar() {
             bar.classList.remove('open');
-            btn.style.display = '';
             clearMarks();
             input.value = '';
             lastQuery = '';
@@ -238,6 +356,8 @@
             if (e.key === 'Enter') { e.preventDefault(); search(e.shiftKey ? -1 : 1); }
             if (e.key === 'Escape') closeBar();
         });
+
+        route();   // 打开页面时先显示对应板块
     })();
     </script>
 </body>
