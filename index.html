@@ -29,5 +29,77 @@
 <img src="qwe.jpg" alt="星空草地" style="max-width: 100%; height: auto; border-radius: 8px;">
 <p>安らぎを君に</p>
 <p>命运迷人之处，在于意想不到的转折。</p>
+<!-- 匿名留言板模块 -->
+<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+  <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: normal; color: #555;">留言板</h3>
+  
+  <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+    <input type="text" id="msg-input" placeholder="留下一句话..." maxlength="500"
+           style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 13px; outline: none;">
+    <button id="msg-btn" onclick="sendMessage()"
+            style="padding: 6px 14px; background: #333; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 13px;">
+      发送
+    </button>
+  </div>
+  
+  <div id="msg-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+</div>
+
+<script>
+  // 替换成你在 Cloudflare 部署的 Worker 访问地址
+  const API_URL = "https://msg-api.你的名字.workers.dev";
+
+  function renderMessages(list) {
+    const container = document.getElementById("msg-list");
+    container.innerHTML = "";
+    list.forEach(item => {
+      const card = document.createElement("div");
+      card.style.cssText = "padding: 8px 10px; background: #fafafa; border-radius: 3px; font-size: 13px; line-height: 1.4;";
+      
+      const content = document.createElement("div");
+      content.textContent = item.text;
+      
+      const time = document.createElement("div");
+      time.textContent = item.time;
+      time.style.cssText = "font-size: 11px; color: #aaa; margin-top: 2px;";
+      
+      card.appendChild(content);
+      card.appendChild(time);
+      container.appendChild(card);
+    });
+  }
+
+  // 页面加载时自动获取
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => renderMessages(data))
+    .catch(() => {});
+
+  // 提交留言
+  function sendMessage() {
+    const input = document.getElementById("msg-input");
+    const btn = document.getElementById("msg-btn");
+    const text = input.value.trim();
+    if (!text) return;
+
+    btn.disabled = true;
+    btn.textContent = "...";
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    })
+    .then(res => res.json())
+    .then(data => {
+      input.value = "";
+      renderMessages(data);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = "发送";
+    });
+  }
+</script>
 </body>
 </html>
