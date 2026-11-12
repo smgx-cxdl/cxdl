@@ -41,6 +41,59 @@
             font-size: 20px;
         }
 
+        /* 搜索图标（右上角） */
+        #searchBtn {
+            position: fixed;
+            top: 10px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .55);
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* 搜索栏 */
+        #searchBar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            background: #fff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+            z-index: 200;
+        }
+        #searchBar.open { display: flex; }
+        #q {
+            flex: 1;
+            min-width: 0;
+            height: 36px;
+            padding: 0 10px;
+            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        #count { font-size: 13px; color: #666; white-space: nowrap; }
+        #searchBar button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: #eee;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 搜索命中高亮 */
+        mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
+        mark.hit.current { background: #ff9f43; }
+
         /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
             body { padding-top: 40px; }
@@ -48,23 +101,128 @@
     </style>
 </head>
 <body>
-    <h1>Hello, World! </h1>
+    <button id="searchBtn" aria-label="搜索">🔍</button>
 
-    <p class="verse">【圣经·传道书12章1节】<br>
-    你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
-    <p>陌生人，你好！</p>
-    <p>个人邮箱：smgxcxdl@163.com</p>
-    <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
-    <p>无论怎么看，都是无聊的一生。</p>
-    <p>生れて、すみません。</p>
-    <p>Matrix</p>
-    <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
-    <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
-    <p><img src="diqiu.jpg" alt="遥望地球" loading="lazy"></p>
-    <img src="qwe.jpg" alt="星空草地" loading="lazy">
-    <p>安らぎを君に</p>
-    <p>命运迷人之处，在于意想不到的转折。</p>
+    <div id="searchBar">
+        <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
+        <span id="count"></span>
+        <button id="prev" aria-label="上一个">↑</button>
+        <button id="next" aria-label="下一个">↓</button>
+        <button id="closeBar" aria-label="关闭">✕</button>
+    </div>
+
+    <main id="content">
+        <h1>Hello, World! </h1>
+
+        <p class="verse">【圣经·传道书12章1节】<br>
+        你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
+        <p>陌生人，你好！</p>
+        <p>个人邮箱：smgxcxdl@163.com</p>
+        <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
+        <p>无论怎么看，都是无聊的一生。</p>
+        <p>生れて、すみません。</p>
+        <p>Matrix</p>
+        <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
+        <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
+        <img src="qwe.jpg" alt="星空草地" loading="lazy">
+        <p>安らぎを君に</p>
+        <p>命运迷人之处，在于意想不到的转折。</p>
+    </main>
 
     <a href="#" id="toTop" aria-label="回到顶部">↑</a>
+
+    <script>
+    (function () {
+        var content = document.getElementById('content');
+        var bar = document.getElementById('searchBar');
+        var btn = document.getElementById('searchBtn');
+        var input = document.getElementById('q');
+        var count = document.getElementById('count');
+        var marks = [], cur = -1, lastQuery = '';
+
+        function clearMarks() {
+            var olds = content.querySelectorAll('mark.hit');
+            for (var i = 0; i < olds.length; i++) {
+                var m = olds[i], p = m.parentNode;
+                p.replaceChild(document.createTextNode(m.textContent), m);
+                p.normalize();
+            }
+            marks = []; cur = -1;
+        }
+
+        function highlight(q) {
+            clearMarks();
+            count.textContent = '';
+            if (!q) return;
+            var re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+            var nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(function (node) {
+                var text = node.nodeValue;
+                re.lastIndex = 0;
+                if (!re.test(text)) return;
+                re.lastIndex = 0;
+                var frag = document.createDocumentFragment(), last = 0, m;
+                while ((m = re.exec(text))) {
+                    frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+                    var mk = document.createElement('mark');
+                    mk.className = 'hit';
+                    mk.textContent = m[0];
+                    frag.appendChild(mk);
+                    last = m.index + m[0].length;
+                }
+                frag.appendChild(document.createTextNode(text.slice(last)));
+                node.parentNode.replaceChild(frag, node);
+            });
+            marks = Array.prototype.slice.call(content.querySelectorAll('mark.hit'));
+        }
+
+        function go(i) {
+            if (!marks.length) { count.textContent = '无结果'; return; }
+            if (cur >= 0) marks[cur].classList.remove('current');
+            cur = (i + marks.length) % marks.length;
+            marks[cur].classList.add('current');
+            marks[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            count.textContent = (cur + 1) + '/' + marks.length;
+        }
+
+        function search(step) {
+            var q = input.value.trim();
+            if (q !== lastQuery) {
+                lastQuery = q;
+                highlight(q);
+                if (q) go(0);
+            } else if (q) {
+                go(cur + step);
+            }
+        }
+
+        function openBar() {
+            bar.classList.add('open');
+            btn.style.display = 'none';
+            input.focus();
+        }
+        function closeBar() {
+            bar.classList.remove('open');
+            btn.style.display = '';
+            clearMarks();
+            input.value = '';
+            lastQuery = '';
+            count.textContent = '';
+        }
+
+        btn.addEventListener('click', openBar);
+        document.getElementById('closeBar').addEventListener('click', closeBar);
+        document.getElementById('next').addEventListener('click', function () { search(1); });
+        document.getElementById('prev').addEventListener('click', function () { search(-1); });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.isComposing || e.keyCode === 229) return;   // 输入法选字时的回车不触发搜索
+            if (e.key === 'Enter') { e.preventDefault(); search(e.shiftKey ? -1 : 1); }
+            if (e.key === 'Escape') closeBar();
+        });
+    })();
+    </script>
 </body>
 </html>
