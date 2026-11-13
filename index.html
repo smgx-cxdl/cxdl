@@ -207,6 +207,74 @@
         }
         .note-page .note-text p { color: #222; }
 
+        /* 留言板 */
+        #page-board .board-wrap { max-width: 640px; margin: 0 auto; text-align: left; }
+        #page-board .board-tip { font-size: 14px; color: #888; margin: 4px 0 14px; line-height: 1.6; text-align: center; }
+        .board-form {
+            background: #fff;
+            border-radius: 8px;
+            padding: 14px 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+        }
+        .board-form input[type="text"], .board-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
+            font-family: inherit;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .board-form textarea { height: 90px; resize: vertical; }
+        .board-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .board-row .board-count { font-size: 13px; color: #888; }
+        .board-btn {
+            border: none;
+            border-radius: 6px;
+            background: #4a6cf7;
+            color: #fff;
+            font-size: 15px;
+            padding: 8px 18px;
+            cursor: pointer;
+        }
+        .board-btn:disabled { background: #aab; cursor: default; }
+        .board-btn.light { background: #eee; color: #333; }
+        #boardStatus { min-height: 20px; margin: 8px 0 0; font-size: 14px; color: #c0392b; text-align: left; }
+        #boardStatus.ok { color: #2e8b57; }
+        .msg {
+            background: #fff;
+            border-radius: 8px;
+            margin: 12px 0;
+            padding: 12px 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+        }
+        .msg.hidden-msg { opacity: .55; }
+        .msg .mh { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+        .msg .mn { font-weight: bold; color: #333; word-break: break-all; }
+        .msg .mt { font-size: 12px; color: #999; }
+        .msg .badge {
+            font-size: 12px;
+            color: #fff;
+            background: #e67e22;
+            border-radius: 4px;
+            padding: 1px 6px;
+        }
+        .msg .mc { margin: 8px 0 6px; color: #222; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+        .msg .ma { display: flex; gap: 14px; }
+        .msg .ma button {
+            border: none;
+            background: none;
+            padding: 2px 0;
+            font-size: 13px;
+            color: #888;
+            cursor: pointer;
+        }
+        .msg .ma button.del { color: #c0392b; }
+        #boardMore { display: block; margin: 12px auto; }
+        #boardAdmin { margin-top: 24px; text-align: center; font-size: 13px; }
+        #boardAdmin a { color: #aaa; text-decoration: none; }
+
         /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
             #scroller { padding-top: 16px; }
@@ -239,6 +307,7 @@
         <a href="#other" data-page="other">圣经经文 </a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
+        <a href="#board" data-page="board">留言板</a>
     </nav>
 
     <div id="scroller">
@@ -298,16 +367,31 @@
                 <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
             </div>
         </section>
+
         <section class="page note-page" id="page-note-2" data-title="1984">
             <h2>1984</h2>
             <div class="note-text">
                 <p>“但话又说回来，一个自孩提开始就受严格思想训练的人，在新语所说“罪停”“黑白”和“双重思想”范围打转的人，长大后就不会愿意也不可能把任何问题深思熟虑了。”</p>
-      </section>
             </div>
-            <section class="page note-page" id="page-note-2" data-title="网络摘选">
-            <h2>网络摘选</h2>
-            <div class="note-text">
-                <p>“人工智能了解你孩子身上其他人所不知道的事情。这是人类历史上规模最大的心理和社会实验的一部分。”</p>
+        </section>
+
+        <!-- 板块五：留言板（匿名留言，数据存在 Supabase，配置方法见 supabase-setup.sql） -->
+        <section class="page" id="page-board">
+            <h2>留言板</h2>
+            <div class="board-wrap">
+                <p class="board-tip">不用注册，随便起个名字就能留言。<br>你可以删除自己在这台设备上发的留言。</p>
+                <div class="board-form">
+                    <input type="text" id="boardName" maxlength="20" placeholder="昵称（随意，20字内）" autocomplete="off">
+                    <textarea id="boardText" maxlength="300" placeholder="想说点什么…（300字内，不支持链接）"></textarea>
+                    <div class="board-row">
+                        <span class="board-count" id="boardCount">0/300</span>
+                        <button class="board-btn" id="boardSend" type="button">发表留言</button>
+                    </div>
+                    <p id="boardStatus"></p>
+                </div>
+                <div id="boardList"></div>
+                <button class="board-btn light" id="boardMore" type="button" style="display:none">加载更多</button>
+                <div id="boardAdmin"><a href="javascript:void(0)" id="boardAdminLink">站长入口</a></div>
             </div>
         </section>
     </main>
@@ -542,6 +626,229 @@
         });
 
         route();   // 打开页面时先显示对应板块
+    })();
+    </script>
+    <script>
+    /* ---------- 留言板 ---------- */
+    (function () {
+        /* ====== 配置：按 supabase-setup.sql 开头的说明，填入你自己的两项 ====== */
+        var SUPABASE_URL = 'https://ahhzhblsvnezbsfavdos.supabase.co';
+        var SUPABASE_KEY = 'sb_publishable_4VE2KzR8ZhbqP4Kqb6-qaA_nF0DaYBe';   // publishable key，可公开
+        /* ==================================================================== */
+
+        var PAGE_SIZE = 20;
+        var ERR = {
+            too_fast: '发得太快了，请稍等半分钟再发',
+            too_many: '今天发得够多了，明天再来吧',
+            has_link: '留言里不能带链接',
+            banned: '留言含有不允许的内容',
+            reserved_name: '这个昵称已被保留，请换一个',
+            bad_nick: '昵称需要 1–20 个字',
+            bad_content: '留言需要 1–300 个字',
+            forbidden: '站长密码不对'
+        };
+
+        var elName = document.getElementById('boardName');
+        var elText = document.getElementById('boardText');
+        var elCount = document.getElementById('boardCount');
+        var elSend = document.getElementById('boardSend');
+        var elStatus = document.getElementById('boardStatus');
+        var elList = document.getElementById('boardList');
+        var elMore = document.getElementById('boardMore');
+        var elAdminLink = document.getElementById('boardAdminLink');
+        var oldestId = null, loading = false;
+
+        /* 本机保存的“我发过的留言”凭证、昵称、站长密码（读写都包一层，防止浏览器禁用存储时报错） */
+        function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+        function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+        function ssSet(k, v) { try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+        function getTokens() { try { return JSON.parse(lsGet('board_tokens') || '{}') || {}; } catch (e) { return {}; } }
+        function saveToken(id, tk) { var t = getTokens(); t[id] = tk; lsSet('board_tokens', JSON.stringify(t)); }
+        function dropToken(id) { var t = getTokens(); delete t[id]; lsSet('board_tokens', JSON.stringify(t)); }
+        function adminKey() { return ssGet('board_admin') || ''; }
+
+        function newToken() {
+            var a = new Uint8Array(16), s = '';
+            (window.crypto || window.msCrypto).getRandomValues(a);
+            for (var i = 0; i < a.length; i++) s += ('0' + a[i].toString(16)).slice(-2);
+            return s;
+        }
+
+        function rpc(name, args) {
+            if (!SUPABASE_URL || !SUPABASE_KEY) return Promise.reject({ message: 'not_configured' });
+            return fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/' + name, {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(args || {})
+            }).then(function (r) {
+                return r.text().then(function (t) {
+                    var data = null;
+                    try { data = t ? JSON.parse(t) : null; } catch (e) {}
+                    if (!r.ok) throw { message: (data && data.message) || ('http_' + r.status) };
+                    return data;
+                });
+            });
+        }
+        function errText(e) {
+            var m = (e && e.message) || '';
+            if (m === 'not_configured') return '留言板还没配置好（站长需要先填入 Supabase 信息）';
+            return ERR[m] || '出错了，请稍后再试';
+        }
+        function say(text, ok) {
+            elStatus.textContent = text || '';
+            elStatus.className = ok ? 'ok' : '';
+        }
+
+        function fmtTime(iso) {
+            var d = new Date(iso);
+            if (isNaN(d)) return '';
+            function z(n) { return ('0' + n).slice(-2); }
+            return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+        }
+
+        function actionBtn(label, cls, fn) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = label;
+            if (cls) b.className = cls;
+            b.addEventListener('click', fn);
+            return b;
+        }
+
+        function render(rows, append) {
+            if (!append) elList.innerHTML = '';
+            var tokens = getTokens(), isAdmin = !!adminKey();
+            if (!append && !rows.length) {
+                var p = document.createElement('p');
+                p.className = 'note-empty';
+                p.style.textAlign = 'center';
+                p.textContent = '还没有留言，来做第一个吧';
+                elList.appendChild(p);
+            }
+            rows.forEach(function (m) {
+                var own = !!tokens[m.id];
+                var box = document.createElement('div');
+                box.className = 'msg' + (m.hidden ? ' hidden-msg' : '');
+                var head = document.createElement('div');
+                head.className = 'mh';
+                var nm = document.createElement('span');
+                nm.className = 'mn';
+                nm.textContent = m.nickname;
+                head.appendChild(nm);
+                if (m.is_admin) {
+                    var bg = document.createElement('span');
+                    bg.className = 'badge';
+                    bg.textContent = '站长';
+                    head.appendChild(bg);
+                }
+                var tm = document.createElement('span');
+                tm.className = 'mt';
+                tm.textContent = fmtTime(m.created_at) + (m.hidden ? ' · 已被举报隐藏' : '') + (isAdmin && m.reports ? ' · 举报' + m.reports : '');
+                head.appendChild(tm);
+                var body = document.createElement('div');
+                body.className = 'mc';
+                body.textContent = m.content;       // 只用 textContent，留言里的代码不会被执行
+                var act = document.createElement('div');
+                act.className = 'ma';
+                if (isAdmin && m.hidden) {
+                    act.appendChild(actionBtn('恢复显示', '', function () { restoreMsg(m.id); }));
+                }
+                if (isAdmin || own) {
+                    act.appendChild(actionBtn('删除', 'del', function () { deleteMsg(m.id, own && !isAdmin); }));
+                } else {
+                    var rb = actionBtn('举报', '', function () { reportMsg(m.id, rb); });
+                    act.appendChild(rb);
+                }
+                box.appendChild(head); box.appendChild(body); box.appendChild(act);
+                elList.appendChild(box);
+            });
+            if (rows.length) oldestId = rows[rows.length - 1].id;
+            elMore.style.display = rows.length >= PAGE_SIZE ? 'block' : 'none';
+        }
+
+        function load(reset) {
+            if (loading) return;
+            loading = true;
+            if (reset) oldestId = null;
+            var key = adminKey();
+            var p = key
+                ? rpc('list_messages_admin', { p_key: key, p_before: oldestId, p_limit: PAGE_SIZE })
+                : rpc('list_messages', { p_before: oldestId, p_limit: PAGE_SIZE });
+            p.then(function (rows) {
+                render(rows || [], !reset);
+            }).catch(function (e) {
+                if (e && e.message === 'forbidden') { ssSet('board_admin', null); syncAdminLink(); }
+                if (reset) { elList.innerHTML = ''; elMore.style.display = 'none'; }
+                say(errText(e));
+            }).then(function () { loading = false; });
+        }
+
+        function send() {
+            var nick = elName.value.trim(), text = elText.value.trim();
+            if (!nick) { say('请先填一个昵称'); return; }
+            if (!text) { say('请写点内容再发表'); return; }
+            lsSet('board_nick', nick);
+            var tk = newToken();
+            elSend.disabled = true;
+            say('发送中…', true);
+            rpc('post_message', { p_nickname: nick, p_content: text, p_token: tk, p_admin_key: adminKey() || null })
+                .then(function (id) {
+                    if (id) saveToken(id, tk);
+                    elText.value = '';
+                    elCount.textContent = '0/300';
+                    say('发表成功', true);
+                    load(true);
+                })
+                .catch(function (e) { say(errText(e)); })
+                .then(function () { elSend.disabled = false; });
+        }
+
+        function deleteMsg(id, asOwner) {
+            if (!confirm('确定删除这条留言吗？')) return;
+            var p = asOwner
+                ? rpc('delete_message', { p_id: id, p_token: getTokens()[id] })
+                : rpc('admin_delete', { p_id: id, p_key: adminKey() });
+            p.then(function () { dropToken(id); say('已删除', true); load(true); })
+             .catch(function (e) { say(errText(e)); });
+        }
+        function restoreMsg(id) {
+            rpc('admin_restore', { p_id: id, p_key: adminKey() })
+                .then(function () { load(true); })
+                .catch(function (e) { say(errText(e)); });
+        }
+        function reportMsg(id, btn) {
+            if (!confirm('举报这条留言？被多人举报后会自动隐藏。')) return;
+            rpc('report_message', { p_id: id })
+                .then(function () { btn.textContent = '已举报'; btn.disabled = true; say('已举报，谢谢', true); })
+                .catch(function (e) { say(errText(e)); });
+        }
+
+        /* 站长入口：输入站长密码后，每条留言都出现“删除”，被举报隐藏的也能看到并恢复 */
+        function syncAdminLink() {
+            elAdminLink.textContent = adminKey() ? '退出站长模式' : '站长入口';
+        }
+        elAdminLink.addEventListener('click', function () {
+            if (adminKey()) { ssSet('board_admin', null); syncAdminLink(); say(''); load(true); return; }
+            var k = prompt('请输入站长密码');
+            if (!k) return;
+            ssSet('board_admin', k);
+            syncAdminLink();
+            say('');
+            load(true);
+        });
+
+        elText.addEventListener('input', function () { elCount.textContent = elText.value.length + '/300'; });
+        elSend.addEventListener('click', send);
+        elMore.addEventListener('click', function () { load(false); });
+        var savedNick = lsGet('board_nick');
+        if (savedNick) elName.value = savedNick;
+        syncAdminLink();
+
+        /* 每次进入留言板时刷新一次 */
+        function check() { if (location.hash === '#board') load(true); }
+        window.addEventListener('hashchange', check);
+        check();
     })();
     </script>
     <div id="sb" style="position:fixed;right:0;top:52px;bottom:0;width:22px;z-index:150;touch-action:none;">
