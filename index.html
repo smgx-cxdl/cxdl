@@ -199,7 +199,7 @@
         }
         .note-page .note-text p { color: #222; }
 
-        /* 留言板 */
+        /* 私密留言板 */
         #page-board .board-wrap { max-width: 640px; margin: 0 auto; text-align: left; }
         #page-board .board-tip { font-size: 14px; color: #888; margin: 4px 0 14px; line-height: 1.6; text-align: center; }
         .board-form {
@@ -208,7 +208,7 @@
             padding: 14px 16px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
         }
-        .board-form input[type="text"], .board-form textarea {
+        .board-form textarea {
             width: 100%;
             box-sizing: border-box;
             padding: 8px 10px;
@@ -217,8 +217,9 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             margin-bottom: 8px;
+            height: 76px;
+            resize: vertical;
         }
-        .board-form textarea { height: 84px; resize: vertical; }
         .board-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .board-row .board-count { font-size: 13px; color: #888; }
         .board-btn {
@@ -227,7 +228,7 @@
             background: #4a6cf7;
             color: #fff;
             font-size: 14px;
-            padding: 8px 16px;
+            padding: 7px 16px;
             cursor: pointer;
         }
         .board-btn:disabled { background: #aab; cursor: default; }
@@ -235,6 +236,7 @@
         #boardStatus, .rstatus { min-height: 18px; margin: 6px 0 0; font-size: 13px; color: #c0392b; text-align: left; }
         #boardStatus.ok, .rstatus.ok { color: #2e8b57; }
 
+        /* 多层对话卡片 */
         .thread {
             background: #fff;
             border-radius: 8px;
@@ -242,17 +244,21 @@
             padding: 14px 16px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
         }
-        .msg-item { padding: 6px 0; }
-        .msg-item + .msg-item {
+        .msg-node { position: relative; }
+        .msg-children {
             margin-top: 8px;
-            padding-top: 10px;
-            border-top: 1px dashed #eceef5;
+            padding-left: 14px;
+            border-left: 2px solid #e0e4f0;
         }
+        .msg-children.deep-cap {
+            padding-left: 0;
+            border-left: none;
+        }
+        .msg-item { padding: 6px 0; }
         .msg-item.admin-msg {
             background: #f5f8ff;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 6px;
-            border-top: none;
         }
         .mh { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .mn { font-weight: bold; color: #333; font-size: 14px; }
@@ -266,8 +272,8 @@
         }
         .badge.new { background: #e74c3c; }
         .badge.read { background: #2e8b57; }
-        .mc { margin: 6px 0; color: #222; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-size: 15px; }
-        .ma { display: flex; gap: 14px; margin-top: 4px; }
+        .mc { margin: 5px 0; color: #222; line-height: 1.65; white-space: pre-wrap; word-break: break-word; font-size: 15px; }
+        .ma { display: flex; gap: 14px; margin-top: 2px; }
         .ma button {
             border: none;
             background: none;
@@ -277,8 +283,25 @@
             cursor: pointer;
         }
         .ma button.del { color: #c0392b; }
-        .reply-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
-        .reply-box textarea { height: 64px; margin-bottom: 6px; }
+        .inline-reply {
+            margin: 8px 0 4px;
+            padding: 10px;
+            background: #fafbfe;
+            border: 1px solid #e2e6f0;
+            border-radius: 6px;
+        }
+        .inline-reply textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 8px;
+            font-size: 15px;
+            font-family: inherit;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            height: 60px;
+            resize: vertical;
+            margin-bottom: 6px;
+        }
         .inbox-bar { margin-bottom: 8px; }
         #boardMore { display: block; margin: 12px auto; }
         #boardAdmin { margin-top: 24px; text-align: center; font-size: 13px; }
@@ -286,6 +309,7 @@
 
         @media (max-width: 600px) {
             #scroller { padding-top: 16px; }
+            .msg-children { padding-left: 10px; }
         }
     </style>
 </head>
@@ -377,12 +401,11 @@
             <h2>留言板</h2>
             <div class="board-wrap">
                 <div id="boardVisitor">
-                    <p class="board-tip">这里的留言仅你与站长可见，其他访客无法看到。<br>可随时撤回删除，也能够与站长持续多轮交流回复。</p>
+                    <p class="board-tip">这里的留言仅你与站长可见，其他访客无法看到。<br>可随时撤回删除，也可针对具体消息进行多层回复交流。</p>
                     <div class="board-form">
-                        <input type="text" id="boardName" maxlength="20" placeholder="昵称（可不填）" autocomplete="off">
-                        <textarea id="boardText" maxlength="500" placeholder="和站长说点什么…（500字内）"></textarea>
+                        <textarea id="boardText" maxlength="150" placeholder="和站长说点什么…（150字内）"></textarea>
                         <div class="board-row">
-                            <span class="board-count" id="boardCount">0/500</span>
+                            <span class="board-count" id="boardCount">0/150</span>
                             <button class="board-btn" id="boardSend" type="button">发送留言</button>
                         </div>
                         <p id="boardStatus"></p>
@@ -631,8 +654,8 @@
         var SUPABASE_URL = 'https://ahhzhblsvnezbsfavdos.supabase.co';
         var SUPABASE_KEY = 'sb_publishable_4VE2KzR8ZhbqP4Kqb6-qaA_nF0DaYBe';
         var PAGE_SIZE = 20;
+        var MAX_LEN = 150;
 
-        var elName = document.getElementById('boardName');
         var elText = document.getElementById('boardText');
         var elCount = document.getElementById('boardCount');
         var elSend = document.getElementById('boardSend');
@@ -707,119 +730,106 @@
             return b;
         }
 
-        function groupThreads(rows) {
-            var map = {}, threads = [];
+        function buildTrees(rows) {
+            var map = {}, roots = [];
             (rows || []).forEach(function (r) {
-                if (!r.parent_id) {
-                    var th = { root: r, replies: [] };
-                    map[r.id] = th;
-                    threads.push(th);
-                }
+                r.children = [];
+                map[r.id] = r;
             });
             (rows || []).forEach(function (r) {
                 if (r.parent_id && map[r.parent_id]) {
-                    map[r.parent_id].replies.push(r);
+                    map[r.parent_id].children.push(r);
+                } else if (!r.parent_id) {
+                    roots.push(r);
                 }
             });
-            return threads;
+            roots.sort(function (a, b) { return b.id - a.id; });
+            return roots;
         }
 
-        function buildThreadCard(th, isAdminMode) {
-            var card = el('div', 'thread');
-            var root = th.root;
-            var allMsgs = [root].concat(th.replies);
+        function renderMessageNode(node, rootId, depth, isAdminMode) {
+            var wrap = el('div', 'msg-node');
+            var item = el('div', 'msg-item' + (node.is_admin ? ' admin-msg' : ''));
+            var head = el('div', 'mh');
 
-            allMsgs.forEach(function (m, idx) {
-                var item = el('div', 'msg-item' + (m.is_admin ? ' admin-msg' : ''));
-                var head = el('div', 'mh');
-                head.appendChild(el('span', 'mn', m.is_admin ? '站长' : (m.nickname || '匿名')));
-                if (m.is_admin) head.appendChild(el('span', 'badge', '站长'));
-                if (!isAdminMode && idx === 0 && root.read_at) {
-                    head.appendChild(el('span', 'badge read', '站长已读'));
-                }
-                if (isAdminMode && idx === 0 && !root.read_at) {
-                    head.appendChild(el('span', 'badge new', '未读'));
-                }
-                head.appendChild(el('span', 'mt', fmtTime(m.created_at)));
-                item.appendChild(head);
-                item.appendChild(el('div', 'mc', m.content));
+            head.appendChild(el('span', 'mn', node.is_admin ? '站长' : '访客'));
+            if (node.is_admin) head.appendChild(el('span', 'badge', '站长'));
+            if (!isAdminMode && depth === 0 && node.read_at) {
+                head.appendChild(el('span', 'badge read', '站长已读'));
+            }
+            if (isAdminMode && depth === 0 && !node.read_at) {
+                head.appendChild(el('span', 'badge new', '未读'));
+            }
+            head.appendChild(el('span', 'mt', fmtTime(node.created_at)));
+            item.appendChild(head);
+            item.appendChild(el('div', 'mc', node.content));
 
-                var act = el('div', 'ma');
-                if (isAdminMode) {
-                    if (idx === 0 && !root.read_at) {
-                        act.appendChild(actionBtn('标记已读', '', function () {
-                            rpc('admin_mark_read', { p_id: root.id, p_key: adminKey() })
-                                .then(function () { loadInbox(true); })
-                                .catch(function () { say('操作失败', false, elAdminStatus); });
-                        }));
-                    }
-                    act.appendChild(actionBtn(idx === 0 ? '删除整串对话' : '删除此条', 'del', function () {
-                        if (!confirm(idx === 0 ? '确定删除整串对话吗？' : '确定删除这条回复吗？')) return;
-                        rpc('admin_delete', { p_id: m.id, p_key: adminKey() })
+            var act = el('div', 'ma');
+            var replyForm = el('div', 'inline-reply');
+            replyForm.style.display = openReplyIds[node.id] ? 'block' : 'none';
+
+            act.appendChild(actionBtn('回复', '', function () {
+                openReplyIds[node.id] = !openReplyIds[node.id];
+                replyForm.style.display = openReplyIds[node.id] ? 'block' : 'none';
+                if (openReplyIds[node.id]) ta.focus();
+            }));
+
+            if (isAdminMode) {
+                if (depth === 0 && !node.read_at) {
+                    act.appendChild(actionBtn('标记已读', '', function () {
+                        rpc('admin_mark_read', { p_id: node.id, p_key: adminKey() })
                             .then(function () { loadInbox(true); })
                             .catch(function () { say('操作失败', false, elAdminStatus); });
                     }));
-                } else {
-                    if (!m.is_admin) {
-                        act.appendChild(actionBtn(idx === 0 ? '撤回整串对话' : '撤回此条', 'del', function () {
-                            if (!confirm(idx === 0 ? '确定撤回整串对话吗？' : '确定撤回这条回复吗？')) return;
-                            var tk = getTokens()[root.id];
-                            rpc('delete_message', { p_id: m.id, p_token: tk })
-                                .then(function () {
-                                    if (idx === 0) dropToken(root.id);
-                                    say('已撤回删除', true);
-                                    loadMine();
-                                })
-                                .catch(function () { say('撤回失败', false); });
-                        }));
-                    }
                 }
-                if (act.childNodes.length) item.appendChild(act);
-                card.appendChild(item);
-            });
-
-            var replyWrap = el('div', 'reply-box');
-            var toggleBtn = actionBtn(isAdminMode ? '回复访客' : '继续回复站长', '', function () {
-                openReplyIds[root.id] = !openReplyIds[root.id];
-                formDiv.style.display = openReplyIds[root.id] ? 'block' : 'none';
-                if (openReplyIds[root.id]) ta.focus();
-            });
-            var barRow = el('div', 'ma');
-            barRow.appendChild(toggleBtn);
-            replyWrap.appendChild(barRow);
-
-            var formDiv = el('div', 'board-form');
-            formDiv.style.display = openReplyIds[root.id] ? 'block' : 'none';
-            formDiv.style.marginTop = '8px';
-            formDiv.style.boxShadow = 'none';
-            formDiv.style.border = '1px solid #e2e6f0';
+                act.appendChild(actionBtn(depth === 0 ? '删除整串对话' : '删除此条', 'del', function () {
+                    if (!confirm(depth === 0 ? '确定删除整串对话吗？' : '确定删除此条及下级回复吗？')) return;
+                    rpc('admin_delete', { p_id: node.id, p_key: adminKey() })
+                        .then(function () { loadInbox(true); })
+                        .catch(function () { say('操作失败', false, elAdminStatus); });
+                }));
+            } else {
+                if (!node.is_admin) {
+                    act.appendChild(actionBtn(depth === 0 ? '撤回整串对话' : '撤回此条', 'del', function () {
+                        if (!confirm(depth === 0 ? '确定撤回整串对话吗？' : '确定撤回此条及下级回复吗？')) return;
+                        var tk = getTokens()[rootId];
+                        rpc('delete_message', { p_id: node.id, p_token: tk })
+                            .then(function () {
+                                if (depth === 0) dropToken(rootId);
+                                say('已撤回删除', true);
+                                loadMine();
+                            })
+                            .catch(function () { say('撤回失败', false); });
+                    }));
+                }
+            }
+            item.appendChild(act);
 
             var ta = document.createElement('textarea');
-            ta.maxLength = 500;
-            ta.placeholder = isAdminMode ? '回复访客…（500字内）' : '回复站长…（500字内）';
+            ta.maxLength = MAX_LEN;
+            ta.placeholder = isAdminMode ? '回复访客…（150字内）' : '回复此条…（150字内）';
 
             var bottomRow = el('div', 'board-row');
-            var cntSpan = el('span', 'board-count', '0/500');
+            var cntSpan = el('span', 'board-count', '0/' + MAX_LEN);
             var sendBtn = el('button', 'board-btn', '发送');
             sendBtn.type = 'button';
             var stP = el('p', 'rstatus');
 
-            ta.addEventListener('input', function () { cntSpan.textContent = ta.value.length + '/500'; });
+            ta.addEventListener('input', function () { cntSpan.textContent = ta.value.length + '/' + MAX_LEN; });
             sendBtn.addEventListener('click', function () {
                 var content = ta.value.trim();
                 if (!content) { say('请先输入内容', false, stP); return; }
                 sendBtn.disabled = true;
                 say('发送中…', true, stP);
                 var args = {
-                    p_nickname: isAdminMode ? '站长' : (elName.value.trim() || root.nickname || '匿名'),
                     p_content: content,
-                    p_token: isAdminMode ? '' : (getTokens()[root.id] || ''),
-                    p_parent_id: root.id,
+                    p_token: isAdminMode ? '' : (getTokens()[rootId] || ''),
+                    p_parent_id: node.id,
                     p_admin_key: isAdminMode ? adminKey() : null
                 };
                 rpc('post_message', args)
                     .then(function () {
-                        openReplyIds[root.id] = false;
+                        openReplyIds[node.id] = false;
                         if (isAdminMode) loadInbox(true);
                         else loadMine();
                     })
@@ -829,12 +839,27 @@
 
             bottomRow.appendChild(cntSpan);
             bottomRow.appendChild(sendBtn);
-            formDiv.appendChild(ta);
-            formDiv.appendChild(bottomRow);
-            formDiv.appendChild(stP);
-            replyWrap.appendChild(formDiv);
-            card.appendChild(replyWrap);
+            replyForm.appendChild(ta);
+            replyForm.appendChild(bottomRow);
+            replyForm.appendChild(stP);
+            item.appendChild(replyForm);
 
+            wrap.appendChild(item);
+
+            if (node.children && node.children.length) {
+                var childBox = el('div', 'msg-children' + (depth >= 4 ? ' deep-cap' : ''));
+                node.children.forEach(function (child) {
+                    childBox.appendChild(renderMessageNode(child, rootId, depth + 1, isAdminMode));
+                });
+                wrap.appendChild(childBox);
+            }
+
+            return wrap;
+        }
+
+        function buildThreadCard(rootNode, isAdminMode) {
+            var card = el('div', 'thread');
+            card.appendChild(renderMessageNode(rootNode, rootNode.id, 0, isAdminMode));
             return card;
         }
 
@@ -846,14 +871,14 @@
             loadingMine = true;
             rpc('my_messages', { p_tokens: ids.map(function (i) { return t[i]; }) })
                 .then(function (rows) {
-                    var threads = groupThreads(rows);
+                    var roots = buildTrees(rows);
                     var alive = {};
-                    threads.forEach(function (th) { alive[th.root.id] = true; });
+                    roots.forEach(function (r) { alive[r.id] = true; });
                     ids.forEach(function (id) { if (!alive[id]) dropToken(id); });
 
                     elMine.innerHTML = '';
-                    threads.forEach(function (th) {
-                        elMine.appendChild(buildThreadCard(th, false));
+                    roots.forEach(function (r) {
+                        elMine.appendChild(buildThreadCard(r, false));
                     });
                 })
                 .catch(function () {})
@@ -861,15 +886,12 @@
         }
 
         function sendNew() {
-            var nick = elName.value.trim() || '匿名';
             var text = elText.value.trim();
             if (!text) { say('请写点内容再发送'); return; }
-            if (elName.value.trim()) lsSet('board_nick', nick);
             var tk = newToken();
             elSend.disabled = true;
             say('发送中…', true);
             rpc('post_message', {
-                p_nickname: nick,
                 p_content: text,
                 p_token: tk,
                 p_parent_id: null,
@@ -878,7 +900,7 @@
             .then(function (id) {
                 if (id) saveToken(id, tk);
                 elText.value = '';
-                elCount.textContent = '0/500';
+                elCount.textContent = '0/' + MAX_LEN;
                 say('已发送！仅你与站长可见。', true);
                 loadMine();
             })
@@ -893,15 +915,15 @@
             rpc('list_messages_admin', { p_key: adminKey(), p_before: oldestId, p_limit: PAGE_SIZE })
                 .then(function (rows) {
                     if (reset) elList.innerHTML = '';
-                    var threads = groupThreads(rows);
-                    if (reset && !threads.length) {
+                    var roots = buildTrees(rows);
+                    if (reset && !roots.length) {
                         elList.appendChild(el('p', 'note-empty', '还没有收到任何留言'));
                     }
-                    threads.forEach(function (th) {
-                        elList.appendChild(buildThreadCard(th, true));
+                    roots.forEach(function (r) {
+                        elList.appendChild(buildThreadCard(r, true));
                     });
-                    if (threads.length) oldestId = threads[threads.length - 1].root.id;
-                    elMore.style.display = threads.length >= PAGE_SIZE ? 'block' : 'none';
+                    if (roots.length) oldestId = roots[roots.length - 1].id;
+                    elMore.style.display = roots.length >= PAGE_SIZE ? 'block' : 'none';
                     elInfo.textContent = '当前显示 ' + elList.querySelectorAll('.thread').length + ' 组对话';
                     say('', false, elAdminStatus);
                 })
@@ -933,10 +955,8 @@
         });
         elRefresh.addEventListener('click', function () { loadInbox(true); });
         elMore.addEventListener('click', function () { loadInbox(false); });
-        elText.addEventListener('input', function () { elCount.textContent = elText.value.length + '/500'; });
+        elText.addEventListener('input', function () { elCount.textContent = elText.value.length + '/' + MAX_LEN; });
         elSend.addEventListener('click', sendNew);
-        var savedNick = lsGet('board_nick');
-        if (savedNick) elName.value = savedNick;
 
         if (adminKey()) showAdminEntry();
         var boardTitle = document.querySelector('#page-board h2');
@@ -950,11 +970,6 @@
                 if (taps >= 5) { taps = 0; showAdminEntry(); }
             });
         }
-
-        setInterval(function () {
-            var hasOpenBox = Object.keys(openReplyIds).some(function (id) { return openReplyIds[id]; });
-            if (onBoard() && !document.hidden && !adminKey() && !hasOpenBox) loadMine();
-        }, 20000);
 
         function check() { if (onBoard()) applyMode(); }
         window.addEventListener('hashchange', check);
