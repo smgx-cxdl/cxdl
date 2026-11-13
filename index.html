@@ -173,32 +173,39 @@
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
 
-        /* 随读笔记：点标题展开/收起 */
-        .note {
+        /* 随读笔记：目录、搜索结果、文章页 */
+        .note-item {
+            display: block;
             background: #fff;
             border-radius: 8px;
             margin: 12px auto;
             max-width: 640px;
+            padding: 14px 16px;
             text-align: left;
+            text-decoration: none;
+            color: #333;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
         }
-        .note summary {
-            padding: 14px 16px;
-            font-size: 17px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            list-style: none;
+        .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
+        .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
+        .note-empty { color: #888; margin-top: 24px; }
+        .backlink {
+            display: block;
+            max-width: 640px;
+            margin: 0 auto 8px;
+            padding: 6px 0;
+            text-align: left;
+            font-size: 15px;
+            color: #555;
+            text-decoration: none;
         }
-        .note summary::-webkit-details-marker { display: none; }
-        .note summary::before { content: "▸ "; color: #888; }
-        .note[open] summary::before { content: "▾ "; }
-        .note .note-body {
-            padding: 0 16px 16px;
+        .note-page .note-text {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: left;
             line-height: 1.9;
-            color: #222;
         }
-        .note .note-body p { color: #222; margin: 0 0 10px; }
+        .note-page .note-text p { color: #222; }
 
         /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
@@ -276,22 +283,27 @@
             <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
         </section>
 
-        <!-- 板块四：随读笔记（每条：点标题展开内容；新增笔记就复制下面整个 details 块） -->
+        <!-- 板块四：随读笔记（目录页，自动列出下面所有笔记标题） -->
         <section class="page" id="page-notes">
             <h2>随读笔记</h2>
+            <div id="noteList"></div>
+            <div id="noteResults"></div>
+        </section>
 
-            <details class="note">
-                <summary>美丽新世界</summary>
-                <div class="note-body">
-                    <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
-                </div>
-            </details>
-             <details class="note">
-                <summary>1984</summary>
-                <div class="note-body">
-                    <p>“但话又说回来，一个自孩提开始就受严格思想训练的人，在新语所说“罪停”“黑白”和“双重思想”范围打转的人，长大后就不会愿意也不可能把任何问题深思熟虑了。”</p>
-                </div>
-            </details>
+        <!-- 每篇笔记是一个独立页面。新增笔记：复制下面任意一整块（从 section 开始到 /section 结束），
+             改掉 id（如 page-note-3）、data-title、标题和正文，目录会自动生成 -->
+        <section class="page note-page" id="page-note-1" data-title="美丽新世界">
+            <h2>美丽新世界</h2>
+            <div class="note-text">
+                <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
+            </div>
+        </section>
+
+        <section class="page note-page" id="page-note-2" data-title="1984">
+            <h2>1984</h2>
+            <div class="note-text">
+                <p>“但话又说回来，一个自孩提开始就受严格思想训练的人，在新语所说“罪停”“黑白”和“双重思想”范围打转的人，长大后就不会愿意也不可能把任何问题深思熟虑了。”</p>
+            </div>
         </section>
     </main>
     </div>
@@ -309,7 +321,33 @@
         var btn = document.getElementById('searchBtn');
         var input = document.getElementById('q');
         var count = document.getElementById('count');
-        var marks = [], cur = -1, lastQuery = '';
+        var marks = [], cur = -1, lastQuery = '', pendingKeyword = null;
+        var notePages = Array.prototype.slice.call(document.querySelectorAll('.note-page'));
+        var noteList = document.getElementById('noteList');
+        var noteResults = document.getElementById('noteResults');
+
+        /* ---------- 随读笔记：自动生成目录 ---------- */
+        function noteBodyText(pg) {
+            var t = pg.querySelector('.note-text');
+            return (t ? t.textContent : pg.textContent).replace(/\s+/g, ' ').trim();
+        }
+        notePages.forEach(function (pg) {
+            var title = pg.getAttribute('data-title') || '';
+            var body = noteBodyText(pg);
+            var a = document.createElement('a');
+            a.className = 'note-item';
+            a.href = '#' + pg.id.replace('page-', '');
+            var t = document.createElement('span'); t.className = 'nt'; t.textContent = title;
+            var sn = document.createElement('span'); sn.className = 'ns';
+            sn.textContent = body.length > 40 ? body.slice(0, 40) + '…' : body;
+            a.appendChild(t); a.appendChild(sn);
+            noteList.appendChild(a);
+            var back = document.createElement('a');
+            back.className = 'backlink';
+            back.href = '#notes';
+            back.textContent = '‹ 返回随读笔记';
+            pg.insertBefore(back, pg.firstChild);
+        });
 
         /* ---------- 菜单 ---------- */
         function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
@@ -326,12 +364,24 @@
             if (!target) { name = 'home'; target = document.getElementById('page-home'); }
             for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
             target.classList.add('active');
+            var menuName = target.classList.contains('note-page') ? 'notes' : name;
             for (var j = 0; j < menuLinks.length; j++) {
-                menuLinks[j].classList.toggle('current', menuLinks[j].getAttribute('data-page') === name);
+                menuLinks[j].classList.toggle('current', menuLinks[j].getAttribute('data-page') === menuName);
             }
             closeMenu();
             closeBar();
+            input.placeholder = (name === 'notes') ? '搜索笔记，回车显示相关文章' : '输入文字，回车跳转';
             scroller.scrollTop = 0;
+            /* 从搜索结果点进文章：在文章里高亮关键词并跳到第一处 */
+            if (pendingKeyword && target.classList.contains('note-page')) {
+                highlight(pendingKeyword);
+                if (marks.length) {
+                    cur = 0;
+                    marks[0].classList.add('current');
+                    marks[0].scrollIntoView({ block: 'center' });
+                }
+            }
+            pendingKeyword = null;
         }
         window.addEventListener('hashchange', route);
 
@@ -390,14 +440,67 @@
             if (cur >= 0) marks[cur].classList.remove('current');
             cur = (i + marks.length) % marks.length;
             marks[cur].classList.add('current');
-            var dt = marks[cur].closest('details');
-            if (dt) dt.open = true;
             marks[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
             count.textContent = (cur + 1) + '/' + marks.length;
         }
 
+        /* 笔记目录页的搜索：列出包含关键词的文章 */
+        function markedSpan(cls, text, lq) {
+            var span = document.createElement('span');
+            span.className = cls;
+            var low = text.toLowerCase(), pos = 0, i;
+            while ((i = low.indexOf(lq, pos)) >= 0) {
+                span.appendChild(document.createTextNode(text.slice(pos, i)));
+                var mk = document.createElement('mark');
+                mk.className = 'hit';
+                mk.textContent = text.slice(i, i + lq.length);
+                span.appendChild(mk);
+                pos = i + lq.length;
+            }
+            span.appendChild(document.createTextNode(text.slice(pos)));
+            return span;
+        }
+        function snippet(body, idx, len) {
+            if (idx < 0) return body.length > 50 ? body.slice(0, 50) + '…' : body;
+            var s = Math.max(0, idx - 20), e = Math.min(body.length, idx + len + 40);
+            return (s > 0 ? '…' : '') + body.slice(s, e) + (e < body.length ? '…' : '');
+        }
+        function searchNotes(q) {
+            noteResults.innerHTML = '';
+            count.textContent = '';
+            lastQuery = q;
+            if (!q) { noteList.style.display = ''; return; }
+            noteList.style.display = 'none';
+            var lq = q.toLowerCase(), n = 0;
+            notePages.forEach(function (pg) {
+                var title = pg.getAttribute('data-title') || '';
+                var body = noteBodyText(pg);
+                var idx = body.toLowerCase().indexOf(lq);
+                if (idx < 0 && title.toLowerCase().indexOf(lq) < 0) return;
+                n++;
+                var a = document.createElement('a');
+                a.className = 'note-item';
+                a.href = '#' + pg.id.replace('page-', '');
+                a.appendChild(markedSpan('nt', title, lq));
+                a.appendChild(markedSpan('ns', snippet(body, idx, lq.length), lq));
+                a.addEventListener('click', function () { pendingKeyword = q; });
+                noteResults.appendChild(a);
+            });
+            if (n) {
+                count.textContent = n + '篇';
+            } else {
+                count.textContent = '无结果';
+                var p = document.createElement('p');
+                p.className = 'note-empty';
+                p.textContent = '没有找到包含“' + q + '”的笔记';
+                noteResults.appendChild(p);
+            }
+        }
+
         function search(step) {
             var q = input.value.trim();
+            var ap = activePage();
+            if (ap && ap.id === 'page-notes') { searchNotes(q); return; }
             if (q !== lastQuery) {
                 lastQuery = q;
                 highlight(q);
@@ -413,6 +516,8 @@
             input.focus();
         }
         function closeBar() {
+            noteResults.innerHTML = '';
+            noteList.style.display = '';
             bar.classList.remove('open');
             clearMarks();
             input.value = '';
