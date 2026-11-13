@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>昔日今日</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         html { scroll-behavior: smooth; }
         body {
@@ -23,10 +24,10 @@
             box-sizing: border-box;
             padding: 24px 16px 60px;
             /* 恢复右侧滚动条 */
-            scrollbar-width: thin;
+            scrollbar-width: none;
             scrollbar-color: #aaa transparent;
         }
-        #scroller::-webkit-scrollbar { width: 8px; }
+        #scroller::-webkit-scrollbar { display: none; }
         #scroller::-webkit-scrollbar-track { background: transparent; }
         #scroller::-webkit-scrollbar-thumb { background: #b5b5bd; border-radius: 4px; }
         h1, h2 { color: #333; }
@@ -132,6 +133,39 @@
         }
         .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
+        /* 自定义可拖动滚动条（手机上系统滚动条无法拖动） */
+        #sbTrack { position: fixed; top: 52px; right: 0; bottom: 0; width: 22px; z-index: 80; touch-action: none; display: none; }
+        #sbThumb { position: absolute; top: 0; right: 3px; width: 6px; border-radius: 3px; background: rgba(90, 90, 110, .55); touch-action: none; cursor: pointer; transition: width .15s, background .15s; }
+        #sbThumb::before { content: ''; position: absolute; top: 0; bottom: 0; left: -14px; right: -3px; }
+        #sbThumb.drag { width: 10px; background: rgba(60, 60, 80, .8); }
+        /* 留言板 */
+        .board-wrap { max-width: 640px; margin: 0 auto; text-align: left; }
+        .board-tip { font-size: 13px; color: #888; margin: 0 0 12px; }
+        #boardStatus { display: none; background: #fff3cd; color: #7a5c00; border-radius: 6px; padding: 8px 12px; font-size: 14px; margin-bottom: 12px; }
+        .board-head { display: none; align-items: center; gap: 10px; margin-bottom: 8px; color: #333; }
+        .linkbtn { border: none; background: none; color: #4a7bd0; font-size: 14px; padding: 4px 0; cursor: pointer; }
+        .board-empty { color: #888; text-align: center; margin: 28px 0; }
+        .msg { width: fit-content; max-width: 85%; margin: 12px 0; display: flex; flex-direction: column; }
+        .msg.mine { margin-left: auto; align-items: flex-end; }
+        .msg.theirs { margin-right: auto; align-items: flex-start; }
+        .msg .who { font-size: 12px; color: #999; margin-bottom: 3px; }
+        .msg .text { padding: 10px 12px; border-radius: 12px; background: #fff; color: #222; line-height: 1.6; white-space: pre-wrap; word-break: break-word; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        .msg.mine .text { background: #cfe8ff; }
+        .msg .text.recalled { background: transparent; color: #999; font-style: italic; box-shadow: none; border: 1px dashed #ccc; }
+        .msg .meta { font-size: 12px; color: #aaa; margin-top: 3px; display: flex; gap: 10px; align-items: center; }
+        .msg .meta button { border: none; background: none; color: #4a7bd0; font-size: 12px; padding: 0; cursor: pointer; }
+        .board-compose { margin-top: 16px; }
+        .board-compose textarea, #ownerForm input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 16px; font-family: inherit; border: 1px solid #ccc; border-radius: 8px; resize: vertical; }
+        .board-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 13px; color: #888; }
+        .board-row button, #ownerForm button.primary { border: none; border-radius: 6px; background: #4a7bd0; color: #fff; padding: 8px 18px; font-size: 15px; cursor: pointer; }
+        .board-row button:disabled, #ownerForm button:disabled { opacity: .5; }
+        .board-foot { margin-top: 24px; text-align: center; }
+        #ownerForm { display: none; margin-top: 12px; }
+        #ownerForm input { margin-bottom: 8px; }
+        .thread-item { background: #fff; border-radius: 8px; padding: 12px 14px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,.1); cursor: pointer; }
+        .thread-item .tt { display: flex; justify-content: space-between; font-size: 15px; color: #333; font-weight: bold; }
+        .thread-item .tt span { font-weight: normal; font-size: 12px; color: #999; }
+        .thread-item .tp { margin-top: 5px; font-size: 14px; color: #777; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (max-width: 600px) { #scroller { padding-top: 16px; } }
     </style>
 </head>
@@ -156,6 +190,7 @@
         <a href="#other" data-page="other">圣经经文</a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
+        <a href="#board" data-page="board">留言板</a>
     </nav>
     <div id="scroller">
         <main>
@@ -196,6 +231,31 @@
                 <div id="noteList"></div>
                 <div id="noteResults"></div>
             </section>
+            <section class="page" id="page-board">
+                <h2>留言板</h2>
+                <div class="board-wrap">
+                    <p class="board-tip" id="boardTip"></p>
+                    <div id="boardStatus"></div>
+                    <div class="board-head" id="boardHead">
+                        <button type="button" class="linkbtn" id="boardBack">← 全部留言</button>
+                        <span id="boardHeadTitle"></span>
+                    </div>
+                    <div id="boardList"></div>
+                    <div class="board-compose" id="boardCompose">
+                        <textarea id="boardInput" rows="3" maxlength="150" placeholder="写下你想说的话（150 字以内）"></textarea>
+                        <div class="board-row"><span id="boardCount">0/150</span><button type="button" id="boardSend">发送</button></div>
+                    </div>
+                    <div class="board-foot">
+                        <button type="button" class="linkbtn" id="ownerLoginLink">站长登录</button>
+                        <button type="button" class="linkbtn" id="ownerLogout" style="display:none">退出登录</button>
+                    </div>
+                    <form id="ownerForm">
+                        <input type="email" id="ownerEmail" placeholder="站长邮箱" autocomplete="username">
+                        <input type="password" id="ownerPass" placeholder="密码" autocomplete="current-password">
+                        <button type="submit" class="primary" id="ownerSubmit">登录</button>
+                    </form>
+                </div>
+            </section>
             <section class="page note-page" id="page-note-1" data-title="美丽新世界">
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
                 <h2>美丽新世界</h2>
@@ -212,6 +272,7 @@
             </section>
         </main>
     </div>
+    <div id="sbTrack"><div id="sbThumb"></div></div>
     <button id="toTop" aria-label="回到顶部">↑</button>
     <script>
         (function () {
@@ -262,6 +323,7 @@
                 topTitle.textContent = titleText;
                 scroller.scrollTop = 0;
                 closeMenu();
+                boardActivate(hash);
                 // 切换页面时清除搜索高亮（搜索跳转除外）
                 if (!jumping) { clearMarks(); hits = []; cur = -1; updateCount(); }
             }
@@ -305,7 +367,7 @@
                         acceptNode(node) {
                             if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
                             const p = node.parentNode;
-                            if (p.closest('#noteList, #noteResults, script, style')) return NodeFilter.FILTER_REJECT;
+                            if (p.closest('#noteList, #noteResults, #page-board, script, style')) return NodeFilter.FILTER_REJECT;
                             return NodeFilter.FILTER_ACCEPT;
                         }
                     }
@@ -390,6 +452,266 @@
             nextBtn.addEventListener('click', () => goTo(cur + 1));
             prevBtn.addEventListener('click', () => goTo(cur - 1));
             /* ============ 搜索功能结束 ============ */
+
+            /* ============ 留言板 ============ */
+            // ↓↓↓ 这两项换成你自己的（Supabase → Project Settings → API）
+            const SUPABASE_URL = 'https://xxxx.supabase.co';
+            const SUPABASE_KEY = 'xxxx-your-anon-public-key';
+            // ↑↑↑
+            const OWNER_EMAIL = 'smgxcxdl@163.com';
+            const MAX_VISITOR = 150, MAX_OWNER = 1000;
+            const $ = id => document.getElementById(id);
+            const bTip = $('boardTip'), bStatus = $('boardStatus'), bHead = $('boardHead'),
+                  bHeadTitle = $('boardHeadTitle'), bList = $('boardList'), bCompose = $('boardCompose'),
+                  bInput = $('boardInput'), bCount = $('boardCount'), bSend = $('boardSend'),
+                  loginLink = $('ownerLoginLink'), logoutBtn = $('ownerLogout'), ownerForm = $('ownerForm');
+            let sb = null, me = null, allMsgs = [], activeThread = null, channel = null, lastSig = '';
+
+            // Realtime：有新消息 / 撤回 / 删除时才通知页面，再拉取一次
+            function unsubscribe() {
+                if (channel && sb) sb.removeChannel(channel);
+                channel = null;
+            }
+            function subscribe() {
+                const c = getClient();
+                if (!c || !me) return;
+                unsubscribe();
+                channel = c.channel('board-' + me.id)
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => load(false))
+                    .subscribe(status => { if (status === 'SUBSCRIBED') load(false); }); // 首次连接/断线重连后补一次
+            }
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && location.hash === '#board' && me) load(false);
+            });
+
+            function getClient() {
+                if (sb) return sb;
+                if (!window.supabase || SUPABASE_URL.indexOf('xxxx') !== -1) return null;
+                sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                return sb;
+            }
+            const isOwner = () => !!me && me.email === OWNER_EMAIL;
+            const limitNow = () => isOwner() ? MAX_OWNER : MAX_VISITOR;
+            function el(tag, cls, text) {
+                const e = document.createElement(tag);
+                if (cls) e.className = cls;
+                if (text != null) e.textContent = text;
+                return e;
+            }
+            const shortId = id => String(id).slice(0, 4);
+            function fmtTime(s) {
+                const d = new Date(s), p = n => String(n).padStart(2, '0');
+                return (d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+            }
+            function showStatus(t) { bStatus.textContent = t || ''; bStatus.style.display = t ? 'block' : 'none'; }
+            function updateCount() { bCount.textContent = [...bInput.value].length + '/' + limitNow(); }
+            function updateMode() {
+                const o = isOwner();
+                bInput.maxLength = limitNow();
+                bInput.placeholder = o ? '回复访客…' : '写下你想说的话（150 字以内）';
+                bTip.textContent = o ? '站长模式：这里只显示访客发给你的留言。'
+                                     : '留言仅你和站长可见，双方都可以撤回或删除自己发出的消息。';
+                bCompose.style.display = (!o || activeThread) ? 'block' : 'none';
+                bHead.style.display = (o && activeThread) ? 'flex' : 'none';
+                loginLink.style.display = o ? 'none' : 'inline';
+                logoutBtn.style.display = o ? 'inline' : 'none';
+                updateCount();
+            }
+            function bubble(m) {
+                const mine = m.sender_id === (me && me.id);
+                const row = el('div', 'msg ' + (mine ? 'mine' : 'theirs'));
+                row.appendChild(el('div', 'who', mine ? '我' : (m.is_owner ? '站长' : '访客')));
+                row.appendChild(m.recalled ? el('div', 'text recalled', '此消息已撤回') : el('div', 'text', m.content));
+                const meta = el('div', 'meta');
+                meta.appendChild(el('span', null, fmtTime(m.created_at)));
+                if (mine) {
+                    if (!m.recalled) {
+                        const r = el('button', null, '撤回');
+                        r.type = 'button';
+                        r.addEventListener('click', () => recallMsg(m.id));
+                        meta.appendChild(r);
+                    }
+                    const d = el('button', null, '删除');
+                    d.type = 'button';
+                    d.addEventListener('click', () => deleteMsg(m.id));
+                    meta.appendChild(d);
+                }
+                row.appendChild(meta);
+                return row;
+            }
+            function render() {
+                bList.innerHTML = '';
+                if (isOwner() && !activeThread) {
+                    const groups = {};
+                    allMsgs.forEach(m => { (groups[m.thread_id] = groups[m.thread_id] || []).push(m); });
+                    const last = id => groups[id][groups[id].length - 1];
+                    const ids = Object.keys(groups).sort((a, b) => new Date(last(b).created_at) - new Date(last(a).created_at));
+                    if (!ids.length) bList.appendChild(el('p', 'board-empty', '暂无访客留言'));
+                    ids.forEach(id => {
+                        const lm = last(id);
+                        const item = el('div', 'thread-item');
+                        const tt = el('div', 'tt', '访客 ' + shortId(id));
+                        tt.appendChild(el('span', null, fmtTime(lm.created_at) + ' · ' + groups[id].length + ' 条'));
+                        item.appendChild(tt);
+                        const who = lm.sender_id === me.id ? '你：' : '';
+                        item.appendChild(el('div', 'tp', who + (lm.recalled ? '[已撤回]' : lm.content)));
+                        item.addEventListener('click', () => { activeThread = id; updateMode(); render(); scroller.scrollTop = 0; });
+                        bList.appendChild(item);
+                    });
+                } else {
+                    const msgs = isOwner() ? allMsgs.filter(m => m.thread_id === activeThread) : allMsgs;
+                    if (isOwner()) bHeadTitle.textContent = '访客 ' + shortId(activeThread);
+                    if (!msgs.length) bList.appendChild(el('p', 'board-empty', isOwner() ? '该会话已没有消息' : '还没有留言，说点什么吧。'));
+                    msgs.forEach(m => bList.appendChild(bubble(m)));
+                }
+                updateMode();
+            }
+            async function load(force) {
+                const c = getClient();
+                if (!c || !me) return;
+                const { data, error } = await c.from('messages').select('*')
+                    .order('created_at', { ascending: true }).limit(1000);
+                if (error) { showStatus('加载失败：' + error.message); return; }
+                showStatus('');
+                const sig = JSON.stringify(data.map(m => [m.id, m.recalled]));
+                if (!force && sig === lastSig) return;
+                lastSig = sig; allMsgs = data; render();
+            }
+            async function sendMsg() {
+                const c = getClient();
+                if (!c) return;
+                const text = bInput.value.trim();
+                if (!text) return;
+                if ([...text].length > limitNow()) { alert('超出字数限制（' + limitNow() + ' 字）'); return; }
+                if (isOwner() && !activeThread) return;
+                bSend.disabled = true;
+                try {
+                    if (!me) {
+                        const { data, error } = await c.auth.signInAnonymously();
+                        if (error) throw error;
+                        me = data.user; updateMode(); subscribe();
+                    }
+                    const { error } = await c.from('messages').insert({
+                        content: text,
+                        thread_id: isOwner() ? activeThread : me.id
+                    });
+                    if (error) throw error;
+                    bInput.value = ''; updateCount(); showStatus('');
+                    await load(true);
+                    scroller.scrollTop = scroller.scrollHeight;
+                } catch (e) {
+                    showStatus('发送失败：' + (e.message || e));
+                } finally {
+                    bSend.disabled = false;
+                }
+            }
+            async function recallMsg(id) {
+                const c = getClient();
+                if (!c) return;
+                const { data, error } = await c.from('messages').update({ recalled: true, content: '' }).eq('id', id).select();
+                if (error || !data || !data.length) { showStatus('撤回失败' + (error ? '：' + error.message : '')); return; }
+                await load(true);
+            }
+            async function deleteMsg(id) {
+                if (!confirm('确定删除这条消息吗？删除后对方也将看不到。')) return;
+                const c = getClient();
+                if (!c) return;
+                const { data, error } = await c.from('messages').delete().eq('id', id).select();
+                if (error || !data || !data.length) { showStatus('删除失败' + (error ? '：' + error.message : '')); return; }
+                await load(true);
+            }
+            async function boardStart() {
+                const c = getClient();
+                if (!c) {
+                    showStatus('留言板尚未配置：请在 index.html 中填写 SUPABASE_URL 和 SUPABASE_KEY。');
+                    bCompose.style.display = 'none';
+                    return;
+                }
+                if (!me) {
+                    const { data } = await c.auth.getSession();
+                    me = data.session ? data.session.user : null;
+                }
+                lastSig = '';
+                if (me) { await load(true); subscribe(); } else render();
+            }
+            function boardActivate(hash) {
+                if (hash === 'board') { boardStart(); }
+                else { unsubscribe(); }
+            }
+
+            bInput.addEventListener('input', updateCount);
+            bInput.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendMsg(); });
+            bSend.addEventListener('click', sendMsg);
+            $('boardBack').addEventListener('click', () => { activeThread = null; updateMode(); render(); });
+            loginLink.addEventListener('click', () => {
+                ownerForm.style.display = ownerForm.style.display === 'block' ? 'none' : 'block';
+            });
+            ownerForm.addEventListener('submit', async e => {
+                e.preventDefault();
+                const c = getClient();
+                if (!c) return;
+                const btn = $('ownerSubmit');
+                btn.disabled = true;
+                const { data, error } = await c.auth.signInWithPassword({
+                    email: $('ownerEmail').value.trim(), password: $('ownerPass').value
+                });
+                btn.disabled = false;
+                if (error) { showStatus('登录失败：' + error.message); return; }
+                $('ownerPass').value = ''; ownerForm.style.display = 'none';
+                me = data.user; activeThread = null; lastSig = ''; showStatus(''); subscribe();
+                await load(true);
+            });
+            logoutBtn.addEventListener('click', async () => {
+                const c = getClient();
+                unsubscribe();
+                if (c) await c.auth.signOut();
+                me = null; allMsgs = []; activeThread = null; lastSig = '';
+                render();
+            });
+            /* ============ 留言板结束 ============ */
+
+            /* ============ 可拖动滚动条 ============ */
+            const track = document.getElementById('sbTrack'), thumb = document.getElementById('sbThumb');
+            function updateThumb() {
+                const ch = scroller.clientHeight, sh = scroller.scrollHeight;
+                if (sh <= ch + 1) { track.style.display = 'none'; return; }
+                track.style.display = 'block';
+                const th = track.clientHeight;
+                const h = Math.max(40, th * ch / sh);
+                const top = (th - h) * scroller.scrollTop / (sh - ch);
+                thumb.style.height = h + 'px';
+                thumb.style.transform = 'translateY(' + top + 'px)';
+            }
+            scroller.addEventListener('scroll', updateThumb);
+            window.addEventListener('resize', updateThumb);
+            window.addEventListener('load', updateThumb);
+            if (window.ResizeObserver) {
+                const ro = new ResizeObserver(updateThumb);
+                ro.observe(scroller);
+                ro.observe(scroller.querySelector('main'));
+            }
+            let drag = null;
+            thumb.addEventListener('pointerdown', e => {
+                e.preventDefault(); e.stopPropagation();
+                thumb.setPointerCapture(e.pointerId);
+                drag = { y: e.clientY, st: scroller.scrollTop };
+                thumb.classList.add('drag');
+            });
+            thumb.addEventListener('pointermove', e => {
+                if (!drag) return;
+                const range = track.clientHeight - thumb.offsetHeight;
+                const max = scroller.scrollHeight - scroller.clientHeight;
+                if (range > 0) scroller.scrollTop = drag.st + (e.clientY - drag.y) * max / range;
+            });
+            const endDrag = () => { drag = null; thumb.classList.remove('drag'); };
+            thumb.addEventListener('pointerup', endDrag);
+            thumb.addEventListener('pointercancel', endDrag);
+            track.addEventListener('pointerdown', e => {   // 点轨道空白处：上下翻一屏
+                if (e.target !== track) return;
+                const r = thumb.getBoundingClientRect();
+                scroller.scrollBy({ top: (e.clientY < r.top ? -1 : 1) * scroller.clientHeight * 0.9, behavior: 'smooth' });
+            });
+            /* ============ 滚动条结束 ============ */
 
             window.addEventListener('hashchange', showPage);
             showPage();
