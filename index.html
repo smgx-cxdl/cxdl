@@ -14,7 +14,6 @@
             margin: 0;
             overflow: hidden;
         }
-        /* 内容滚动区域：页面内容在这里面滚动，右侧滚动条绑定它 */
         #scroller {
             position: fixed;
             top: 52px; left: 0; right: 0; bottom: 0;
@@ -26,12 +25,10 @@
             scrollbar-width: none;
         }
         #scroller::-webkit-scrollbar { display: none; }
-        h1 { color: #333; }
-        h2 { color: #333; }
+        h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
 
-        /* 所有图片自适应屏幕宽度 */
         img {
             max-width: 100%;
             height: auto;
@@ -39,8 +36,6 @@
             margin: 0 auto;
             border-radius: 8px;
         }
-
-        /* 图片名称：与正文不同的字体 */
         figure { margin: 0 auto; }
         figcaption {
             margin: 8px 0 4px;
@@ -50,7 +45,6 @@
             color: #444;
         }
 
-        /* 分页：同一时间只显示一个板块 */
         .page { display: none; }
         .page.active { display: block; }
 
@@ -134,7 +128,7 @@
             cursor: pointer;
         }
 
-        /* 搜索栏（盖在顶部栏上） */
+        /* 搜索栏 */
         #searchBar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -154,7 +148,7 @@
             min-width: 0;
             height: 36px;
             padding: 0 10px;
-            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 6px;
         }
@@ -168,12 +162,10 @@
             font-size: 16px;
             cursor: pointer;
         }
-
-        /* 搜索命中高亮 */
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
 
-        /* 随读笔记：目录、搜索结果、文章页 */
+        /* 随读笔记 */
         .note-item {
             display: block;
             background: #fff;
@@ -188,7 +180,7 @@
         }
         .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
         .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
-        .note-empty { color: #888; margin-top: 24px; }
+        .note-empty { color: #888; margin-top: 24px; text-align: center; }
         .backlink {
             display: block;
             max-width: 640px;
@@ -220,13 +212,13 @@
             width: 100%;
             box-sizing: border-box;
             padding: 8px 10px;
-            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
+            font-size: 16px;
             font-family: inherit;
             border: 1px solid #ccc;
             border-radius: 6px;
             margin-bottom: 8px;
         }
-        .board-form textarea { height: 90px; resize: vertical; }
+        .board-form textarea { height: 84px; resize: vertical; }
         .board-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .board-row .board-count { font-size: 13px; color: #888; }
         .board-btn {
@@ -234,75 +226,70 @@
             border-radius: 6px;
             background: #4a6cf7;
             color: #fff;
-            font-size: 15px;
-            padding: 8px 18px;
+            font-size: 14px;
+            padding: 8px 16px;
             cursor: pointer;
         }
         .board-btn:disabled { background: #aab; cursor: default; }
         .board-btn.light { background: #eee; color: #333; }
-        #boardStatus { min-height: 20px; margin: 8px 0 0; font-size: 14px; color: #c0392b; text-align: left; }
-        #boardStatus.ok { color: #2e8b57; }
-        .msg {
+        #boardStatus, .rstatus { min-height: 18px; margin: 6px 0 0; font-size: 13px; color: #c0392b; text-align: left; }
+        #boardStatus.ok, .rstatus.ok { color: #2e8b57; }
+
+        .thread {
             background: #fff;
             border-radius: 8px;
-            margin: 12px 0;
-            padding: 12px 16px;
+            margin: 14px 0;
+            padding: 14px 16px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
         }
-        .msg.hidden-msg { opacity: .55; }
-        .msg .mh { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-        .msg .mn { font-weight: bold; color: #333; word-break: break-all; }
-        .msg .mt { font-size: 12px; color: #999; }
-        .msg .badge {
-            font-size: 12px;
+        .msg-item { padding: 6px 0; }
+        .msg-item + .msg-item {
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px dashed #eceef5;
+        }
+        .msg-item.admin-msg {
+            background: #f5f8ff;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-top: none;
+        }
+        .mh { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .mn { font-weight: bold; color: #333; font-size: 14px; }
+        .mt { font-size: 12px; color: #999; }
+        .badge {
+            font-size: 11px;
             color: #fff;
-            background: #e67e22;
+            background: #4a6cf7;
             border-radius: 4px;
             padding: 1px 6px;
         }
-        .msg .mc { margin: 8px 0 6px; color: #222; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-        .msg .ma { display: flex; gap: 14px; }
-        .msg .ma button {
+        .badge.new { background: #e74c3c; }
+        .badge.read { background: #2e8b57; }
+        .mc { margin: 6px 0; color: #222; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-size: 15px; }
+        .ma { display: flex; gap: 14px; margin-top: 4px; }
+        .ma button {
             border: none;
             background: none;
             padding: 2px 0;
             font-size: 13px;
-            color: #888;
+            color: #4a6cf7;
             cursor: pointer;
         }
-        .msg .ma button.del { color: #c0392b; }
-        /* 信箱模式：倒计时、已读通知、站长回复 */
-        .msg .cd { font-size: 12px; color: #e67e22; }
-        .msg .st { margin: 4px 0; font-size: 13px; color: #2e8b57; }
-        .msg .reply-text { margin: 8px 0 4px; padding: 8px 10px; background: #f3f6ff; border-radius: 6px; color: #223; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-        .msg.notice { background: #f3fbf6; }
-        .badge.new { background: #e74c3c; }
-        .inbox-bar { margin-bottom: 4px; }
-        #boardMine { margin-top: 4px; }
-
-        /* 回复：缩进显示在原留言下面，只做一层 */
-        .thread { margin: 12px 0; }
-        .thread > .msg { margin: 0; }
-        .replies { margin: 6px 0 0 12px; padding-left: 10px; border-left: 3px solid #dfe3f5; }
-        .replies:empty { display: none; }
-        .msg.reply { background: #fafbff; box-shadow: none; border: 1px solid #eceef8; margin: 6px 0; padding: 10px 12px; }
-        .reply-form { margin: 8px 0; padding: 10px 12px; }
-        .reply-form textarea { height: 70px; }
-        .rstatus { min-height: 18px; margin: 6px 0 0; font-size: 13px; color: #c0392b; }
-        .rstatus.ok { color: #2e8b57; }
-        .reply-form .board-btn { padding: 6px 12px; font-size: 14px; }
+        .ma button.del { color: #c0392b; }
+        .reply-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .reply-box textarea { height: 64px; margin-bottom: 6px; }
+        .inbox-bar { margin-bottom: 8px; }
         #boardMore { display: block; margin: 12px auto; }
         #boardAdmin { margin-top: 24px; text-align: center; font-size: 13px; }
         #boardAdmin a { color: #aaa; text-decoration: none; }
 
-        /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
             #scroller { padding-top: 16px; }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部栏：菜单、主页、标题、搜索 -->
     <div id="topbar">
         <button class="iconbtn" id="menuBtn" aria-label="菜单">☰</button>
         <a class="iconbtn" id="homeBtn" href="#home" aria-label="主页">首页</a>
@@ -310,7 +297,6 @@
         <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
     </div>
 
-    <!-- 搜索栏 -->
     <div id="searchBar">
         <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
         <span id="count"></span>
@@ -319,12 +305,11 @@
         <button id="closeBar" aria-label="关闭">✕</button>
     </div>
 
-    <!-- 侧边菜单 -->
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
-        <a href="#home" data-page="home">主页 </a>
-        <a href="#other" data-page="other">圣经经文 </a>
+        <a href="#home" data-page="home">主页</a>
+        <a href="#other" data-page="other">圣经经文</a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
         <a href="#board" data-page="board">留言板</a>
@@ -332,10 +317,8 @@
 
     <div id="scroller">
     <main>
-        <!-- 板块一：主页 -->
         <section class="page" id="page-home">
-            <h1>Hello, World! </h1>
-
+            <h1>Hello, World!</h1>
             <p class="verse">【圣经·传道书12章1节】<br>
             你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
             <p>陌生人，你好！</p>
@@ -357,13 +340,11 @@
             <p>命运迷人之处，在于意想不到的转折。</p>
         </section>
 
-        <!-- 板块二：【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。 -->
         <section class="page" id="page-other">
             <h2>圣经经文</h2>
             <p>【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。</p>
         </section>
 
-        <!-- 板块三：圣经 -->
         <section class="page" id="page-bible">
             <h2>圣经</h2>
             <p>浏览器打开下面的网站下载安装：</p>
@@ -372,15 +353,12 @@
             <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
         </section>
 
-        <!-- 板块四：随读笔记（目录页，自动列出下面所有笔记标题） -->
         <section class="page" id="page-notes">
             <h2>随读笔记</h2>
             <div id="noteList"></div>
             <div id="noteResults"></div>
         </section>
 
-        <!-- 每篇笔记是一个独立页面。新增笔记：复制下面任意一整块（从 section 开始到 /section 结束），
-             改掉 id（如 page-note-3）、data-title、标题和正文，目录会自动生成 -->
         <section class="page note-page" id="page-note-1" data-title="美丽新世界">
             <h2>美丽新世界</h2>
             <div class="note-text">
@@ -395,25 +373,23 @@
             </div>
         </section>
 
-        <!-- 板块五：留言板（匿名留言，数据存在 Supabase，配置方法见 supabase-setup.sql） -->
         <section class="page" id="page-board">
             <h2>留言板</h2>
             <div class="board-wrap">
-                <!-- 访客看到的部分：只能给站长留言 -->
                 <div id="boardVisitor">
-                    <p class="board-tip">这里的留言只有站长能看到，不会公开给其他访客。<br>你发出的留言会在下面展示 60 秒，之后对你也隐藏，只留给站长；60 秒内可以撤回。<br>站长查看或回复后，你下次用同一台设备、同一个浏览器打开这里，会看到通知。</p>
+                    <p class="board-tip">这里的留言仅你与站长可见，其他访客无法看到。<br>可随时撤回删除，也能够与站长持续多轮交流回复。</p>
                     <div class="board-form">
                         <input type="text" id="boardName" maxlength="20" placeholder="昵称（可不填）" autocomplete="off">
-                        <textarea id="boardText" maxlength="500" placeholder="想对站长说点什么…（500字内，不支持链接）"></textarea>
+                        <textarea id="boardText" maxlength="500" placeholder="和站长说点什么…（500字内）"></textarea>
                         <div class="board-row">
                             <span class="board-count" id="boardCount">0/500</span>
-                            <button class="board-btn" id="boardSend" type="button">发给站长</button>
+                            <button class="board-btn" id="boardSend" type="button">发送留言</button>
                         </div>
                         <p id="boardStatus"></p>
                     </div>
                     <div id="boardMine"></div>
                 </div>
-                <!-- 站长模式看到的收件箱 -->
+
                 <div id="boardInbox" style="display:none">
                     <div class="board-row inbox-bar">
                         <span class="board-count" id="boardInboxInfo"></span>
@@ -423,6 +399,7 @@
                     <div id="boardList"></div>
                     <button class="board-btn light" id="boardMore" type="button" style="display:none">加载更多</button>
                 </div>
+
                 <div id="boardAdmin" style="display:none"><a href="javascript:void(0)" id="boardAdminLink">站长入口</a></div>
             </div>
         </section>
@@ -447,7 +424,6 @@
         var noteList = document.getElementById('noteList');
         var noteResults = document.getElementById('noteResults');
 
-        /* ---------- 随读笔记：自动生成目录 ---------- */
         function noteBodyText(pg) {
             var t = pg.querySelector('.note-text');
             return (t ? t.textContent : pg.textContent).replace(/\s+/g, ' ').trim();
@@ -470,13 +446,11 @@
             pg.insertBefore(back, pg.firstChild);
         });
 
-        /* ---------- 菜单 ---------- */
         function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
         function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
         document.getElementById('menuBtn').addEventListener('click', openMenu);
         overlay.addEventListener('click', closeMenu);
 
-        /* ---------- 分页（按网址 # 后面的名字切换） ---------- */
         function activePage() { return document.querySelector('.page.active'); }
 
         function route() {
@@ -493,7 +467,6 @@
             closeBar();
             input.placeholder = (name === 'notes') ? '搜索笔记，回车显示相关文章' : '输入文字，回车跳转';
             scroller.scrollTop = 0;
-            /* 从搜索结果点进文章：在文章里高亮关键词并跳到第一处 */
             if (pendingKeyword && target.classList.contains('note-page')) {
                 highlight(pendingKeyword);
                 if (marks.length) {
@@ -506,7 +479,6 @@
         }
         window.addEventListener('hashchange', route);
 
-        /* 点当前所在页面的链接时，网址不变，手动回顶并关菜单 */
         function sameLinkClick() { closeMenu(); scroller.scrollTop = 0; }
         document.getElementById('homeBtn').addEventListener('click', sameLinkClick);
         for (var k = 0; k < menuLinks.length; k++) menuLinks[k].addEventListener('click', sameLinkClick);
@@ -515,7 +487,6 @@
             scroller.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        /* ---------- 搜索（只搜当前显示的板块） ---------- */
         function clearMarks() {
             var root = document.querySelector('main');
             var olds = root.querySelectorAll('mark.hit');
@@ -565,7 +536,6 @@
             count.textContent = (cur + 1) + '/' + marks.length;
         }
 
-        /* 笔记目录页的搜索：列出包含关键词的文章 */
         function markedSpan(cls, text, lq) {
             var span = document.createElement('span');
             span.className = cls;
@@ -631,11 +601,7 @@
             }
         }
 
-        function openBar() {
-            closeMenu();
-            bar.classList.add('open');
-            input.focus();
-        }
+        function openBar() { closeMenu(); bar.classList.add('open'); input.focus(); }
         function closeBar() {
             noteResults.innerHTML = '';
             noteList.style.display = '';
@@ -650,36 +616,21 @@
         document.getElementById('closeBar').addEventListener('click', closeBar);
         document.getElementById('next').addEventListener('click', function () { search(1); });
         document.getElementById('prev').addEventListener('click', function () { search(-1); });
-
         input.addEventListener('keydown', function (e) {
-            if (e.isComposing || e.keyCode === 229) return;   // 输入法选字时的回车不触发搜索
+            if (e.isComposing || e.keyCode === 229) return;
             if (e.key === 'Enter') { e.preventDefault(); search(e.shiftKey ? -1 : 1); }
             if (e.key === 'Escape') closeBar();
         });
 
-        route();   // 打开页面时先显示对应板块
+        route();
     })();
     </script>
+
     <script>
-    /* ---------- 留言板：给站长的信箱 ---------- */
     (function () {
-        /* ====== Supabase 连接信息（publishable key 是公开给网页用的，可以放在这里） ====== */
         var SUPABASE_URL = 'https://ahhzhblsvnezbsfavdos.supabase.co';
         var SUPABASE_KEY = 'sb_publishable_4VE2KzR8ZhbqP4Kqb6-qaA_nF0DaYBe';
-        /* ================================================================================ */
-
         var PAGE_SIZE = 20;
-        var ERR = {
-            too_fast: '发得太快了，请稍等半分钟再发',
-            too_many: '今天发得够多了，明天再来吧',
-            has_link: '内容里不能带链接',
-            banned: '内容含有不允许的字词',
-            reserved_name: '这个昵称已被保留，请换一个',
-            bad_nick: '昵称最多 20 个字',
-            bad_content: '内容的字数不符合要求（留言 1–500 字，回复 1–300 字）',
-            expired: '已超过 60 秒，无法撤回了',
-            forbidden: '站长密码不对'
-        };
 
         var elName = document.getElementById('boardName');
         var elText = document.getElementById('boardText');
@@ -697,11 +648,9 @@
         var elAdminBox = document.getElementById('boardAdmin');
         var elAdminLink = document.getElementById('boardAdminLink');
 
-        var mineRows = [], loadingMine = false, mineAgain = false;
-        var inboxRows = [], oldestId = null, loadingInbox = false;
-        var replyBox = null, replyCtx = null;
+        var oldestId = null, loadingInbox = false, loadingMine = false;
+        var openReplyIds = {};
 
-        /* 本机保存的“我发过的留言”凭证、昵称、站长密码（读写都包一层，防止浏览器禁用存储时报错） */
         function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
         function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
         function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
@@ -720,7 +669,6 @@
         }
 
         function rpc(name, args) {
-            if (!SUPABASE_URL || !SUPABASE_KEY) return Promise.reject({ message: 'not_configured' });
             return fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/' + name, {
                 method: 'POST',
                 headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
@@ -734,15 +682,11 @@
                 });
             });
         }
-        function errText(e) {
-            var m = (e && e.message) || '';
-            if (m === 'not_configured') return '留言板还没配置好（站长需要先填入 Supabase 信息）';
-            return ERR[m] || '出错了，请稍后再试';
-        }
-        function say(text, ok, el) {
-            el = el || elStatus;
-            el.textContent = text || '';
-            el.classList.toggle('ok', !!ok);
+
+        function say(text, ok, targetEl) {
+            targetEl = targetEl || elStatus;
+            targetEl.textContent = text || '';
+            targetEl.classList.toggle('ok', !!ok);
         }
         function fmtTime(iso) {
             var d = new Date(iso);
@@ -750,11 +694,10 @@
             function z(n) { return ('0' + n).slice(-2); }
             return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
         }
-        function leftSecs(expireAt) { return Math.max(0, Math.ceil((expireAt - Date.now()) / 1000)); }
         function el(tag, cls, text) {
             var n = document.createElement(tag);
             if (cls) n.className = cls;
-            if (text !== undefined) n.textContent = text;     // 只用 textContent，留言里的代码不会被执行
+            if (text !== undefined) n.textContent = text;
             return n;
         }
         function actionBtn(label, cls, fn) {
@@ -764,110 +707,183 @@
             return b;
         }
 
-        /* =====================================================
-           访客端：只看自己发的留言（60 秒内可见，可撤回），以及站长的已读/回复通知
-           ===================================================== */
+        function groupThreads(rows) {
+            var map = {}, threads = [];
+            (rows || []).forEach(function (r) {
+                if (!r.parent_id) {
+                    var th = { root: r, replies: [] };
+                    map[r.id] = th;
+                    threads.push(th);
+                }
+            });
+            (rows || []).forEach(function (r) {
+                if (r.parent_id && map[r.parent_id]) {
+                    map[r.parent_id].replies.push(r);
+                }
+            });
+            return threads;
+        }
+
+        function buildThreadCard(th, isAdminMode) {
+            var card = el('div', 'thread');
+            var root = th.root;
+            var allMsgs = [root].concat(th.replies);
+
+            allMsgs.forEach(function (m, idx) {
+                var item = el('div', 'msg-item' + (m.is_admin ? ' admin-msg' : ''));
+                var head = el('div', 'mh');
+                head.appendChild(el('span', 'mn', m.is_admin ? '站长' : (m.nickname || '匿名')));
+                if (m.is_admin) head.appendChild(el('span', 'badge', '站长'));
+                if (!isAdminMode && idx === 0 && root.read_at) {
+                    head.appendChild(el('span', 'badge read', '站长已读'));
+                }
+                if (isAdminMode && idx === 0 && !root.read_at) {
+                    head.appendChild(el('span', 'badge new', '未读'));
+                }
+                head.appendChild(el('span', 'mt', fmtTime(m.created_at)));
+                item.appendChild(head);
+                item.appendChild(el('div', 'mc', m.content));
+
+                var act = el('div', 'ma');
+                if (isAdminMode) {
+                    if (idx === 0 && !root.read_at) {
+                        act.appendChild(actionBtn('标记已读', '', function () {
+                            rpc('admin_mark_read', { p_id: root.id, p_key: adminKey() })
+                                .then(function () { loadInbox(true); })
+                                .catch(function () { say('操作失败', false, elAdminStatus); });
+                        }));
+                    }
+                    act.appendChild(actionBtn(idx === 0 ? '删除整串对话' : '删除此条', 'del', function () {
+                        if (!confirm(idx === 0 ? '确定删除整串对话吗？' : '确定删除这条回复吗？')) return;
+                        rpc('admin_delete', { p_id: m.id, p_key: adminKey() })
+                            .then(function () { loadInbox(true); })
+                            .catch(function () { say('操作失败', false, elAdminStatus); });
+                    }));
+                } else {
+                    if (!m.is_admin) {
+                        act.appendChild(actionBtn(idx === 0 ? '撤回整串对话' : '撤回此条', 'del', function () {
+                            if (!confirm(idx === 0 ? '确定撤回整串对话吗？' : '确定撤回这条回复吗？')) return;
+                            var tk = getTokens()[root.id];
+                            rpc('delete_message', { p_id: m.id, p_token: tk })
+                                .then(function () {
+                                    if (idx === 0) dropToken(root.id);
+                                    say('已撤回删除', true);
+                                    loadMine();
+                                })
+                                .catch(function () { say('撤回失败', false); });
+                        }));
+                    }
+                }
+                if (act.childNodes.length) item.appendChild(act);
+                card.appendChild(item);
+            });
+
+            var replyWrap = el('div', 'reply-box');
+            var toggleBtn = actionBtn(isAdminMode ? '回复访客' : '继续回复站长', '', function () {
+                openReplyIds[root.id] = !openReplyIds[root.id];
+                formDiv.style.display = openReplyIds[root.id] ? 'block' : 'none';
+                if (openReplyIds[root.id]) ta.focus();
+            });
+            var barRow = el('div', 'ma');
+            barRow.appendChild(toggleBtn);
+            replyWrap.appendChild(barRow);
+
+            var formDiv = el('div', 'board-form');
+            formDiv.style.display = openReplyIds[root.id] ? 'block' : 'none';
+            formDiv.style.marginTop = '8px';
+            formDiv.style.boxShadow = 'none';
+            formDiv.style.border = '1px solid #e2e6f0';
+
+            var ta = document.createElement('textarea');
+            ta.maxLength = 500;
+            ta.placeholder = isAdminMode ? '回复访客…（500字内）' : '回复站长…（500字内）';
+
+            var bottomRow = el('div', 'board-row');
+            var cntSpan = el('span', 'board-count', '0/500');
+            var sendBtn = el('button', 'board-btn', '发送');
+            sendBtn.type = 'button';
+            var stP = el('p', 'rstatus');
+
+            ta.addEventListener('input', function () { cntSpan.textContent = ta.value.length + '/500'; });
+            sendBtn.addEventListener('click', function () {
+                var content = ta.value.trim();
+                if (!content) { say('请先输入内容', false, stP); return; }
+                sendBtn.disabled = true;
+                say('发送中…', true, stP);
+                var args = {
+                    p_nickname: isAdminMode ? '站长' : (elName.value.trim() || root.nickname || '匿名'),
+                    p_content: content,
+                    p_token: isAdminMode ? '' : (getTokens()[root.id] || ''),
+                    p_parent_id: root.id,
+                    p_admin_key: isAdminMode ? adminKey() : null
+                };
+                rpc('post_message', args)
+                    .then(function () {
+                        openReplyIds[root.id] = false;
+                        if (isAdminMode) loadInbox(true);
+                        else loadMine();
+                    })
+                    .catch(function () { say('发送失败', false, stP); })
+                    .then(function () { sendBtn.disabled = false; });
+            });
+
+            bottomRow.appendChild(cntSpan);
+            bottomRow.appendChild(sendBtn);
+            formDiv.appendChild(ta);
+            formDiv.appendChild(bottomRow);
+            formDiv.appendChild(stP);
+            replyWrap.appendChild(formDiv);
+            card.appendChild(replyWrap);
+
+            return card;
+        }
+
         function loadMine() {
-            if (loadingMine) { mineAgain = true; return; }
+            if (loadingMine) return;
             var t = getTokens();
-            var ids = Object.keys(t).sort(function (a, b) { return b - a; }).slice(0, 50);
-            if (!ids.length) { mineRows = []; renderMine(); return; }
+            var ids = Object.keys(t);
+            if (!ids.length) { elMine.innerHTML = ''; return; }
             loadingMine = true;
             rpc('my_messages', { p_tokens: ids.map(function (i) { return t[i]; }) })
                 .then(function (rows) {
-                    var now = Date.now(), seen = {};
-                    mineRows = (rows || []).map(function (r) {
-                        r.expireAt = now + r.secs_left * 1000;
-                        seen[r.id] = 1;
-                        return r;
+                    var threads = groupThreads(rows);
+                    var alive = {};
+                    threads.forEach(function (th) { alive[th.root.id] = true; });
+                    ids.forEach(function (id) { if (!alive[id]) dropToken(id); });
+
+                    elMine.innerHTML = '';
+                    threads.forEach(function (th) {
+                        elMine.appendChild(buildThreadCard(th, false));
                     });
-                    ids.forEach(function (i) { if (!seen[i]) dropToken(i); });   // 服务器上已不存在的留言，凭证不用再留
-                    renderMine();
                 })
-                .catch(function (e) { say(errText(e)); })
-                .then(function () {
-                    loadingMine = false;
-                    if (mineAgain) { mineAgain = false; loadMine(); }
-                });
+                .catch(function () {})
+                .then(function () { loadingMine = false; });
         }
 
-        function renderMine() {
-            elMine.innerHTML = '';
-            mineRows.forEach(function (r) {
-                var visible = r.content != null && leftSecs(r.expireAt) > 0;
-                r.shown = visible;
-                r.cdEl = null;
-                if (!visible && !r.read_at && !r.reply) return;      // 已隐藏、站长也还没看：没什么可显示的
-                var box = el('div', 'msg' + (visible ? '' : ' notice'));
-                var head = el('div', 'mh');
-                if (visible) {
-                    head.appendChild(el('span', 'mn', '你的留言'));
-                    head.appendChild(el('span', 'mt', fmtTime(r.created_at)));
-                    r.cdEl = el('span', 'cd', '还剩 ' + leftSecs(r.expireAt) + ' 秒后隐藏');
-                    head.appendChild(r.cdEl);
-                } else {
-                    head.appendChild(el('span', 'mn', '站长的消息'));
-                    head.appendChild(el('span', 'mt', '关于你在 ' + fmtTime(r.created_at) + ' 发的留言'));
-                }
-                box.appendChild(head);
-                if (visible) box.appendChild(el('div', 'mc', r.content));
-                if (r.read_at) box.appendChild(el('div', 'st', '✓ 站长已于 ' + fmtTime(r.read_at) + ' 查看'));
-                if (r.reply) box.appendChild(el('div', 'reply-text', '站长回复：' + r.reply));
-                var act = el('div', 'ma');
-                if (visible) act.appendChild(actionBtn('撤回', 'del', function () { withdraw(r); }));
-                else act.appendChild(actionBtn('知道了', '', function () { dismiss(r); }));
-                box.appendChild(act);
-                elMine.appendChild(box);
-            });
-        }
-
-        function removeMine(id) {
-            dropToken(id);
-            mineRows = mineRows.filter(function (x) { return x.id !== id; });
-            renderMine();
-        }
-        function dismiss(r) { removeMine(r.id); }
-        function withdraw(r) {
-            if (!confirm('撤回后这条留言会被彻底删除，站长也看不到了。确定撤回吗？')) return;
-            rpc('delete_message', { p_id: r.id, p_token: getTokens()[r.id] })
-                .then(function () { removeMine(r.id); say('已撤回', true); })
-                .catch(function (e) {
-                    if (e && e.message === 'forbidden') { removeMine(r.id); say('这条留言已经不在了'); }
-                    else say(errText(e));
-                });
-        }
-
-        function send() {
-            var nick = elName.value.trim() || '匿名', text = elText.value.trim();
+        function sendNew() {
+            var nick = elName.value.trim() || '匿名';
+            var text = elText.value.trim();
             if (!text) { say('请写点内容再发送'); return; }
             if (elName.value.trim()) lsSet('board_nick', nick);
             var tk = newToken();
             elSend.disabled = true;
             say('发送中…', true);
-            rpc('post_message', { p_nickname: nick, p_content: text, p_token: tk })
-                .then(function (id) {
-                    if (id) saveToken(id, tk);
-                    elText.value = '';
-                    elCount.textContent = '0/500';
-                    say('已发送，只有站长能看到。下面可以在 60 秒内撤回。', true);
-                    loadMine();
-                })
-                .catch(function (e) { say(errText(e)); })
-                .then(function () { elSend.disabled = false; });
-        }
-
-        /* =====================================================
-           站长端：收件箱（全部留言）、标记已读、回复、删除
-           ===================================================== */
-        function adminErr(e) {
-            if (e && e.message === 'forbidden') { ssSet('board_admin', null); applyMode(); return '站长密码不对或已失效，请重新进入站长模式'; }
-            return errText(e);
-        }
-        function adminSay(e) { var msg = adminErr(e); say(msg, false, adminKey() ? elAdminStatus : elStatus); }
-
-        function updateInfo() {
-            var unread = inboxRows.filter(function (m) { return !m.read_at; }).length;
-            elInfo.textContent = '已加载 ' + inboxRows.length + ' 条，未读 ' + unread + ' 条';
+            rpc('post_message', {
+                p_nickname: nick,
+                p_content: text,
+                p_token: tk,
+                p_parent_id: null,
+                p_admin_key: null
+            })
+            .then(function (id) {
+                if (id) saveToken(id, tk);
+                elText.value = '';
+                elCount.textContent = '0/500';
+                say('已发送！仅你与站长可见。', true);
+                loadMine();
+            })
+            .catch(function () { say('发送失败，请稍后重试'); })
+            .then(function () { elSend.disabled = false; });
         }
 
         function loadInbox(reset) {
@@ -875,136 +891,36 @@
             loadingInbox = true;
             if (reset) oldestId = null;
             rpc('list_messages_admin', { p_key: adminKey(), p_before: oldestId, p_limit: PAGE_SIZE })
-                .then(function (rows) { renderInbox(rows || [], !reset); say('', false, elAdminStatus); })
-                .catch(adminSay)
+                .then(function (rows) {
+                    if (reset) elList.innerHTML = '';
+                    var threads = groupThreads(rows);
+                    if (reset && !threads.length) {
+                        elList.appendChild(el('p', 'note-empty', '还没有收到任何留言'));
+                    }
+                    threads.forEach(function (th) {
+                        elList.appendChild(buildThreadCard(th, true));
+                    });
+                    if (threads.length) oldestId = threads[threads.length - 1].root.id;
+                    elMore.style.display = threads.length >= PAGE_SIZE ? 'block' : 'none';
+                    elInfo.textContent = '当前显示 ' + elList.querySelectorAll('.thread').length + ' 组对话';
+                    say('', false, elAdminStatus);
+                })
+                .catch(function () {
+                    ssSet('board_admin', null);
+                    applyMode();
+                    say('站长密码不对或已失效', false, elStatus);
+                })
                 .then(function () { loadingInbox = false; });
         }
 
-        function renderInbox(rows, append) {
-            if (!append) { elList.innerHTML = ''; inboxRows = []; closeReplyBox(); }
-            var now = Date.now();
-            if (!append && !rows.length) elList.appendChild(el('p', 'note-empty', '还没有收到留言'));
-            rows.forEach(function (m) {
-                m.expireAt = now + m.secs_left * 1000;
-                inboxRows.push(m);
-                elList.appendChild(buildInbox(m));
-            });
-            if (rows.length) oldestId = rows[rows.length - 1].id;
-            elMore.style.display = rows.length >= PAGE_SIZE ? 'block' : 'none';
-            updateInfo();
-        }
-
-        function buildInbox(m) {
-            var box = el('div', 'msg');
-            var head = el('div', 'mh');
-            head.appendChild(el('span', 'mn', m.nickname));
-            if (!m.read_at) head.appendChild(el('span', 'badge new', '新'));
-            head.appendChild(el('span', 'mt', fmtTime(m.created_at)));
-            if (m.parent_id) head.appendChild(el('span', 'mt', '（旧版的回复，原留言 #' + m.parent_id + '）'));
-            m.cdEl = null;
-            if (m.expireAt && leftSecs(m.expireAt) > 0) {
-                m.cdEl = el('span', 'cd', '访客那边还在展示 · 剩 ' + leftSecs(m.expireAt) + ' 秒');
-                head.appendChild(m.cdEl);
-            }
-            box.appendChild(head);
-            box.appendChild(el('div', 'mc', m.content));
-            if (m.reply) box.appendChild(el('div', 'reply-text', '你的回复（' + fmtTime(m.replied_at) + '）：' + m.reply));
-            var act = el('div', 'ma');
-            if (!m.read_at) act.appendChild(actionBtn('标记已读', '', function () { markRead(m, box); }));
-            act.appendChild(actionBtn(m.reply ? '修改回复' : '回复', '', function () { openReply(m, box); }));
-            act.appendChild(actionBtn('删除', 'del', function () { adminDelete(m, box); }));
-            box.appendChild(act);
-            return box;
-        }
-        function refreshCard(m, box) {
-            var nb = buildInbox(m);
-            if (box.parentNode) box.parentNode.replaceChild(nb, box);
-            return nb;
-        }
-
-        function markRead(m, box) {
-            rpc('admin_mark_read', { p_id: m.id, p_key: adminKey() })
-                .then(function () { m.read_at = new Date().toISOString(); refreshCard(m, box); updateInfo(); })
-                .catch(adminSay);
-        }
-        function adminDelete(m, box) {
-            if (!confirm('确定彻底删除这条留言吗？')) return;
-            rpc('admin_delete', { p_id: m.id, p_key: adminKey() })
-                .then(function () {
-                    if (replyCtx && replyCtx.box === box) closeReplyBox();
-                    if (box.parentNode) box.parentNode.removeChild(box);
-                    inboxRows = inboxRows.filter(function (x) { return x.id !== m.id; });
-                    updateInfo();
-                })
-                .catch(adminSay);
-        }
-
-        /* 站长回复：输入框插在这条留言的下面 */
-        function ensureReplyBox() {
-            if (replyBox) return;
-            replyBox = el('div', 'board-form reply-form');
-            replyBox.innerHTML =
-                '<textarea class="rt" maxlength="300" placeholder="写一句回复，对方下次打开留言板时会看到（300字内）"></textarea>' +
-                '<div class="board-row"><span class="board-count rc">0/300</span>' +
-                '<span><button type="button" class="board-btn light rx">取消</button> <button type="button" class="board-btn rs">发送回复</button></span></div>' +
-                '<p class="rstatus"></p>';
-            var rt = replyBox.querySelector('.rt');
-            rt.addEventListener('input', function () { replyBox.querySelector('.rc').textContent = rt.value.length + '/300'; });
-            replyBox.querySelector('.rx').addEventListener('click', closeReplyBox);
-            replyBox.querySelector('.rs').addEventListener('click', sendReply);
-        }
-        function closeReplyBox() {
-            if (replyBox && replyBox.parentNode) replyBox.parentNode.removeChild(replyBox);
-            replyCtx = null;
-        }
-        function openReply(m, box) {
-            ensureReplyBox();
-            replyCtx = { m: m, box: box };
-            box.parentNode.insertBefore(replyBox, box.nextSibling);
-            var rt = replyBox.querySelector('.rt');
-            rt.value = m.reply || '';
-            replyBox.querySelector('.rc').textContent = rt.value.length + '/300';
-            say('', false, replyBox.querySelector('.rstatus'));
-            if (replyBox.scrollIntoView) replyBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            rt.focus();
-        }
-        function sendReply() {
-            if (!replyCtx) return;
-            var ctx = replyCtx, rt = replyBox.querySelector('.rt'), rs = replyBox.querySelector('.rs');
-            var st = replyBox.querySelector('.rstatus'), text = rt.value.trim();
-            if (!text) { say('请写点内容再发送', false, st); return; }
-            rs.disabled = true;
-            say('发送中…', true, st);
-            rpc('admin_reply', { p_id: ctx.m.id, p_key: adminKey(), p_text: text })
-                .then(function () {
-                    var now = new Date().toISOString();
-                    ctx.m.reply = text;
-                    ctx.m.replied_at = now;
-                    ctx.m.read_at = ctx.m.read_at || now;
-                    closeReplyBox();
-                    refreshCard(ctx.m, ctx.box);
-                    updateInfo();
-                })
-                .catch(function (e) { say(adminErr(e), false, st); })
-                .then(function () { rs.disabled = false; });
-        }
-
-        /* =====================================================
-           站长入口、模式切换、定时刷新
-           ===================================================== */
         function showAdminEntry() { elAdminBox.style.display = 'block'; }
-
         function applyMode() {
             var adm = !!adminKey();
             elVisitor.style.display = adm ? 'none' : '';
             elInbox.style.display = adm ? '' : 'none';
             elAdminLink.textContent = adm ? '退出站长模式' : '站长入口';
             if (adm) { showAdminEntry(); loadInbox(true); }
-            else {
-                elList.innerHTML = ''; inboxRows = []; closeReplyBox();
-                elMore.style.display = 'none';
-                loadMine();
-            }
+            else { elList.innerHTML = ''; loadMine(); }
         }
 
         elAdminLink.addEventListener('click', function () {
@@ -1018,18 +934,15 @@
         elRefresh.addEventListener('click', function () { loadInbox(true); });
         elMore.addEventListener('click', function () { loadInbox(false); });
         elText.addEventListener('input', function () { elCount.textContent = elText.value.length + '/500'; });
-        elSend.addEventListener('click', send);
+        elSend.addEventListener('click', sendNew);
         var savedNick = lsGet('board_nick');
         if (savedNick) elName.value = savedNick;
 
-        /* 站长入口默认隐藏。叫出方式：在留言板页面里，连续点“留言板”标题 5 次（1.5 秒内）。
-           已经进入站长模式时也会显示，方便退出。 */
         if (adminKey()) showAdminEntry();
         var boardTitle = document.querySelector('#page-board h2');
         if (boardTitle) {
             var taps = 0, tapTimer = null;
             boardTitle.style.userSelect = 'none';
-            boardTitle.style.webkitUserSelect = 'none';
             boardTitle.addEventListener('click', function () {
                 taps++;
                 clearTimeout(tapTimer);
@@ -1038,80 +951,57 @@
             });
         }
 
-        /* 每秒：更新倒计时，到点就把留言从访客页面上收起来 */
         setInterval(function () {
-            var need = false;
-            mineRows.forEach(function (r) {
-                if (!r.shown) return;
-                var left = leftSecs(r.expireAt);
-                if (left <= 0) need = true;
-                else if (r.cdEl) r.cdEl.textContent = '还剩 ' + left + ' 秒后隐藏';
-            });
-            if (need) renderMine();
-            inboxRows.forEach(function (m) {
-                if (!m.cdEl) return;
-                var left = leftSecs(m.expireAt);
-                if (left <= 0) { if (m.cdEl.parentNode) m.cdEl.parentNode.removeChild(m.cdEl); m.cdEl = null; }
-                else m.cdEl.textContent = '访客那边还在展示 · 剩 ' + left + ' 秒';
-            });
-        }, 1000);
+            var hasOpenBox = Object.keys(openReplyIds).some(function (id) { return openReplyIds[id]; });
+            if (onBoard() && !document.hidden && !adminKey() && !hasOpenBox) loadMine();
+        }, 20000);
 
-        /* 每 15 秒：访客端向服务器确认一次站长是否已读/回复（站长端靠“刷新”按钮手动刷新） */
-        setInterval(function () {
-            if (onBoard() && !document.hidden && !adminKey()) loadMine();
-        }, 15000);
-
-        /* 每次进入留言板时刷新一次 */
         function check() { if (onBoard()) applyMode(); }
         window.addEventListener('hashchange', check);
         check();
     })();
     </script>
+
     <div id="sb" style="position:fixed;right:0;top:52px;bottom:0;width:22px;z-index:150;touch-action:none;">
-<div id="sbt" style="position:absolute;right:3px;width:10px;min-height:40px;background:rgba(0,0,0,0.45);border-radius:5px;opacity:0;transition:opacity .3s;"></div>
-</div>
-<script>
-(function(){
-var sc=document.getElementById('scroller'),sb=document.getElementById('sb'),t=document.getElementById('sbt');
-var last=-1,lastH=-1,lastW=-1,timer=null,drag=false;
-function show(){
- t.style.opacity='1';
- clearTimeout(timer);
- timer=setTimeout(function(){ if(!drag) t.style.opacity='0'; },2500);
-}
-function upd(){
- var h=sc.clientHeight,H=sc.scrollHeight;
- if(H<=h+1){sb.style.display='none';return;}
- sb.style.display='block';
- var th=Math.max(40,h*h/H);
- t.style.height=th+'px';
- t.style.top=(sc.scrollTop/(H-h))*(h-th)+'px';
-}
-function move(y){
- var h=sc.clientHeight,H=sc.scrollHeight,th=t.offsetHeight;
- var top=sb.getBoundingClientRect().top;
- var r=Math.min(1,Math.max(0,(y-top-th/2)/(h-th)));
- sc.scrollTop=r*(H-h);
- upd();
-}
-function loop(){
- var y=sc.scrollTop,H=sc.scrollHeight,w=sc.clientHeight;
- if(y!==last){ if(last!==-1) show(); }
- if(y!==last||H!==lastH||w!==lastW){last=y;lastH=H;lastW=w;upd();}
- requestAnimationFrame(loop);
-}
-sb.addEventListener('pointerdown',function(e){drag=true;show();sb.setPointerCapture(e.pointerId);move(e.clientY);e.preventDefault();});
-sb.addEventListener('pointermove',function(e){if(drag){move(e.clientY);show();}});
-sb.addEventListener('pointerup',function(){drag=false;show();});
-sb.addEventListener('pointercancel',function(){drag=false;show();});
-sc.addEventListener('touchstart',show,{passive:true});
-sc.addEventListener('touchmove',show,{passive:true});
-sc.addEventListener('scroll',upd);
-window.addEventListener('resize',upd);
-window.addEventListener('load',upd);
-upd();
-loop();
-})();
-</script>
+        <div id="sbt" style="position:absolute;right:3px;width:10px;min-height:40px;background:rgba(0,0,0,0.45);border-radius:5px;opacity:0;transition:opacity .3s;"></div>
+    </div>
+    <script>
+    (function(){
+        var sc=document.getElementById('scroller'),sb=document.getElementById('sb'),t=document.getElementById('sbt');
+        var last=-1,lastH=-1,lastW=-1,timer=null,drag=false;
+        function show(){ t.style.opacity='1'; clearTimeout(timer); timer=setTimeout(function(){ if(!drag) t.style.opacity='0'; },2500); }
+        function upd(){
+            var h=sc.clientHeight,H=sc.scrollHeight;
+            if(H<=h+1){sb.style.display='none';return;}
+            sb.style.display='block';
+            var th=Math.max(40,h*h/H);
+            t.style.height=th+'px';
+            t.style.top=(sc.scrollTop/(H-h))*(h-th)+'px';
+        }
+        function move(y){
+            var h=sc.clientHeight,H=sc.scrollHeight,th=t.offsetHeight;
+            var top=sb.getBoundingClientRect().top;
+            var r=Math.min(1,Math.max(0,(y-top-th/2)/(h-th)));
+            sc.scrollTop=r*(H-h);
+            upd();
+        }
+        function loop(){
+            var y=sc.scrollTop,H=sc.scrollHeight,w=sc.clientHeight;
+            if(y!==last){ if(last!==-1) show(); }
+            if(y!==last||H!==lastH||w!==lastW){last=y;lastH=H;lastW=w;upd();}
+            requestAnimationFrame(loop);
+        }
+        sb.addEventListener('pointerdown',function(e){drag=true;show();sb.setPointerCapture(e.pointerId);move(e.clientY);e.preventDefault();});
+        sb.addEventListener('pointermove',function(e){if(drag){move(e.clientY);show();}});
+        sb.addEventListener('pointerup',function(){drag=false;show();});
+        sb.addEventListener('pointercancel',function(){drag=false;show();});
+        sc.addEventListener('touchstart',show,{passive:true});
+        sc.addEventListener('touchmove',show,{passive:true});
+        sc.addEventListener('scroll',upd);
+        window.addEventListener('resize',upd);
+        window.addEventListener('load',upd);
+        upd(); loop();
+    })();
+    </script>
 </body>
 </html>
