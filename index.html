@@ -32,6 +32,12 @@
         h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
+        /* 统一优化链接样式 */
+        main a {
+            color: #4a7bd0;
+            text-decoration: none;
+            border-bottom: 1px dashed #4a7bd0;
+        }
         img {
             max-width: 100%;
             height: auto;
@@ -89,6 +95,7 @@
         #menu a {
             display: block; padding: 14px 20px;
             color: #333; text-decoration: none; font-size: 17px;
+            border-bottom: none;
         }
         #menu a.current { background: #f0f0f7; font-weight: bold; }
         #toTop {
@@ -122,6 +129,7 @@
             margin: 12px auto; max-width: 640px; padding: 14px 16px;
             text-align: left; text-decoration: none; color: #333;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+            border-bottom: none !important;
         }
         .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
         .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
@@ -129,6 +137,7 @@
         .backlink {
             display: block; max-width: 640px; margin: 0 auto 8px;
             padding: 6px 0; text-align: left; font-size: 15px; color: #555; text-decoration: none;
+            border-bottom: none;
         }
         .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
@@ -168,7 +177,6 @@
                 <h1>Hello, World!</h1>
                 <p class="verse">【圣经·传道书12章1节】<br>你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
                 <p>陌生人，你好！</p>
-                <p>个人邮箱：smgxcxdl@163.com</p>
                 <figure>
                     <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
                     <figcaption>风景图片</figcaption>
@@ -184,6 +192,13 @@
                 </figure>
                 <p>安らぎを君に</p>
                 <p>命运迷人之处，在于意想不到的转折。</p>
+                
+                <!-- 底部联系我模块 -->
+                <hr style="border: none; border-top: 1px solid #e0e0e8; max-width: 200px; margin: 36px auto;">
+                <p style="font-size: 14px; line-height: 1.8;">
+                    如果你有任何建议、问题，或者想与我交流，可以通过电子邮件联系我。<br>
+                    <a href="mailto:smgxcxdl@163.com">smgxcxdl@163.com</a>
+                </p>
             </section>
             <section class="page" id="page-other">
                 <h2>圣经经文</h2>
