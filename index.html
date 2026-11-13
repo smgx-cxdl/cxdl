@@ -14,7 +14,6 @@
             margin: 0;
             overflow: hidden;
         }
-        /* 内容滚动区域：页面内容在这里面滚动，右侧滚动条绑定它 */
         #scroller {
             position: fixed;
             top: 52px; left: 0; right: 0; bottom: 0;
@@ -26,12 +25,10 @@
             scrollbar-width: none;
         }
         #scroller::-webkit-scrollbar { display: none; }
-        h1 { color: #333; }
-        h2 { color: #333; }
+        h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
 
-        /* 所有图片自适应屏幕宽度 */
         img {
             max-width: 100%;
             height: auto;
@@ -39,8 +36,6 @@
             margin: 0 auto;
             border-radius: 8px;
         }
-
-        /* 图片名称：与正文不同的字体 */
         figure { margin: 0 auto; }
         figcaption {
             margin: 8px 0 4px;
@@ -50,7 +45,6 @@
             color: #444;
         }
 
-        /* 分页：同一时间只显示一个板块 */
         .page { display: none; }
         .page.active { display: block; }
 
@@ -81,6 +75,7 @@
             cursor: pointer;
             padding: 0;
         }
+        #homeBtn { font-size: 14px; }
         #topTitle { flex: 1; text-align: left; color: #333; font-size: 16px; }
 
         /* 侧边菜单 */
@@ -132,9 +127,11 @@
             font-size: 20px;
             padding: 0;
             cursor: pointer;
+            display: none;
+            z-index: 90;
         }
 
-        /* 搜索栏（盖在顶部栏上） */
+        /* 搜索栏 */
         #searchBar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -154,7 +151,7 @@
             min-width: 0;
             height: 36px;
             padding: 0 10px;
-            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 6px;
         }
@@ -168,12 +165,10 @@
             font-size: 16px;
             cursor: pointer;
         }
-
-        /* 搜索命中高亮 */
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
 
-        /* 随读笔记：目录、搜索结果、文章页 */
+        /* 随读笔记 */
         .note-item {
             display: block;
             background: #fff;
@@ -188,7 +183,7 @@
         }
         .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
         .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
-        .note-empty { color: #888; margin-top: 24px; }
+        .note-empty { color: #888; margin-top: 24px; text-align: center; }
         .backlink {
             display: block;
             max-width: 640px;
@@ -207,82 +202,12 @@
         }
         .note-page .note-text p { color: #222; }
 
-        /* 留言板 */
-        #page-board .board-wrap { max-width: 640px; margin: 0 auto; text-align: left; }
-        #page-board .board-tip { font-size: 14px; color: #888; margin: 4px 0 14px; line-height: 1.6; text-align: center; }
-        .board-form {
-            background: #fff;
-            border-radius: 8px;
-            padding: 14px 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-        }
-        .board-form input[type="text"], .board-form textarea {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 8px 10px;
-            font-size: 16px;            /* 16px 可避免 iPhone 自动放大页面 */
-            font-family: inherit;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .board-form textarea { height: 90px; resize: vertical; }
-        .board-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .board-row .board-count { font-size: 13px; color: #888; }
-        .board-btn {
-            border: none;
-            border-radius: 6px;
-            background: #4a6cf7;
-            color: #fff;
-            font-size: 15px;
-            padding: 8px 18px;
-            cursor: pointer;
-        }
-        .board-btn:disabled { background: #aab; cursor: default; }
-        .board-btn.light { background: #eee; color: #333; }
-        #boardStatus { min-height: 20px; margin: 8px 0 0; font-size: 14px; color: #c0392b; text-align: left; }
-        #boardStatus.ok { color: #2e8b57; }
-        .msg {
-            background: #fff;
-            border-radius: 8px;
-            margin: 12px 0;
-            padding: 12px 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-        }
-        .msg.hidden-msg { opacity: .55; }
-        .msg .mh { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-        .msg .mn { font-weight: bold; color: #333; word-break: break-all; }
-        .msg .mt { font-size: 12px; color: #999; }
-        .msg .badge {
-            font-size: 12px;
-            color: #fff;
-            background: #e67e22;
-            border-radius: 4px;
-            padding: 1px 6px;
-        }
-        .msg .mc { margin: 8px 0 6px; color: #222; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-        .msg .ma { display: flex; gap: 14px; }
-        .msg .ma button {
-            border: none;
-            background: none;
-            padding: 2px 0;
-            font-size: 13px;
-            color: #888;
-            cursor: pointer;
-        }
-        .msg .ma button.del { color: #c0392b; }
-        #boardMore { display: block; margin: 12px auto; }
-        #boardAdmin { margin-top: 24px; text-align: center; font-size: 13px; }
-        #boardAdmin a { color: #aaa; text-decoration: none; }
-
-        /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
             #scroller { padding-top: 16px; }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部栏：菜单、主页、标题、搜索 -->
     <div id="topbar">
         <button class="iconbtn" id="menuBtn" aria-label="菜单">☰</button>
         <a class="iconbtn" id="homeBtn" href="#home" aria-label="主页">首页</a>
@@ -290,7 +215,6 @@
         <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
     </div>
 
-    <!-- 搜索栏 -->
     <div id="searchBar">
         <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
         <span id="count"></span>
@@ -299,79 +223,267 @@
         <button id="closeBar" aria-label="关闭">✕</button>
     </div>
 
-    <!-- 侧边菜单 -->
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
-        <a href="#home" data-page="home">主页 </a>
-        <a href="#other" data-page="other">圣经经文 </a>
+        <a href="#home" data-page="home">主页</a>
+        <a href="#other" data-page="other">圣经经文</a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
     </nav>
 
     <div id="scroller">
-    <main>
-        <!-- 板块一：主页 -->
-        <section class="page" id="page-home">
-            <h1>Hello, World! </h1>
+        <main>
+            <section class="page" id="page-home">
+                <h1>Hello, World!</h1>
+                <p class="verse">【圣经·传道书12章1节】<br>
+                你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
+                <p>陌生人，你好！</p>
+                <p>个人邮箱：smgxcxdl@163.com</p>
+                <figure>
+                    <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
+                    <figcaption>风景图片</figcaption>
+                </figure>
+                <p>无论怎么看，都是无聊的一生。</p>
+                <p>生れて、すみません。</p>
+                <p>Matrix</p>
+                <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
+                <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
+                <figure>
+                    <img src="qwe.jpg" alt="星空草地" loading="lazy">
+                    <figcaption>星空草地</figcaption>
+                </figure>
+                <p>安らぎを君に</p>
+                <p>命运迷人之处，在于意想不到的转折。</p>
+            </section>
 
-            <p class="verse">【圣经·传道书12章1节】<br>
-            你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
-            <p>陌生人，你好！</p>
-            <p>个人邮箱：smgxcxdl@163.com</p>
-            <figure>
-                <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
-                <figcaption>风景图片</figcaption>
-            </figure>
-            <p>无论怎么看，都是无聊的一生。</p>
-            <p>生れて、すみません。</p>
-            <p>Matrix</p>
-            <p>オレの中には小さい頃のオレがいて、今も毎日泣いている</p>
-            <p>我心裡有個小時候的我，至今每天都在哭泣。</p>
-            <figure>
-                <img src="qwe.jpg" alt="星空草地" loading="lazy">
-                <figcaption>星空草地</figcaption>
-            </figure>
-            <p>安らぎを君に</p>
-            <p>命运迷人之处，在于意想不到的转折。</p>
-        </section>
+            <section class="page" id="page-other">
+                <h2>圣经经文</h2>
+                <p>【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。</p>
+            </section>
 
-        <!-- 板块二：【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。 -->
-        <section class="page" id="page-other">
-            <h2>圣经经文</h2>
-            <p>【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。</p>
-        </section>
+            <section class="page" id="page-bible">
+                <h2>圣经</h2>
+                <p>浏览器打开下面的网站下载安装：</p>
+                <p><a href="https://sjxz1.com" target="_blank" rel="noopener">https://sjxz1.com</a></p>
+                <p>或</p>
+                <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
+            </section>
 
-        <!-- 板块三：圣经 -->
-        <section class="page" id="page-bible">
-            <h2>圣经</h2>
-            <p>浏览器打开下面的网站下载安装：</p>
-            <p><a href="https://sjxz1.com" target="_blank" rel="noopener">https://sjxz1.com</a></p>
-            <p>或</p>
-            <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
-        </section>
+            <section class="page" id="page-notes">
+                <h2>随读笔记</h2>
+                <div id="noteList"></div>
+                <div id="noteResults"></div>
+            </section>
 
-        <!-- 板块四：随读笔记（目录页，自动列出下面所有笔记标题） -->
-        <section class="page" id="page-notes">
-            <h2>随读笔记</h2>
-            <div id="noteList"></div>
-            <div id="noteResults"></div>
-        </section>
+            <section class="page note-page" id="page-note-1" data-title="美丽新世界">
+                <a class="backlink" href="#notes">← 返回笔记列表</a>
+                <h2>美丽新世界</h2>
+                <div class="note-text">
+                    <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
+                </div>
+            </section>
 
-        <!-- 每篇笔记是一个独立页面。新增笔记：复制下面任意一整块（从 section 开始到 /section 结束），
-             改掉 id（如 page-note-3）、data-title、标题和正文，目录会自动生成 -->
-        <section class="page note-page" id="page-note-1" data-title="美丽新世界">
-            <h2>美丽新世界</h2>
-            <div class="note-text">
-                <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
-            </div>
-        </section>
+            <section class="page note-page" id="page-note-2" data-title="1984">
+                <a class="backlink" href="#notes">← 返回笔记列表</a>
+                <h2>1984</h2>
+                <div class="note-text">
+                    <p>“但话又说回来，一个自孩提开始就受严格思想训练的人，在新语所说“罪停”“黑白”和“双重思想”范围打转的人，长大后就不会愿意也不可能把任何问题深思熟虑了。”</p>
+                </div>
+            </section>
+        </main>
+    </div>
 
-        <section class="page note-page" id="page-note-2" data-title="1984">
-            <h2>1984</h2>
-            <div class="note-text">
-                <p>“但话又说回来，一个自孩提开始就受严格思想训练的人，在新语所说“罪停”“黑白”和“双重思想”范围打转的人，长大后就不会愿意也不可能把任何问题深思熟虑了。”</p>
-            </div>
-        </section>
+    <button id="toTop" aria-label="回到顶部">↑</button>
 
-     
+    <script>
+        (function () {
+            const scroller = document.getElementById('scroller');
+            const menuBtn = document.getElementById('menuBtn');
+            const menu = document.getElementById('menu');
+            const overlay = document.getElementById('overlay');
+            const topTitle = document.getElementById('topTitle');
+            const toTop = document.getElementById('toTop');
+
+            // 1. 侧边菜单控制
+            function openMenu() {
+                menu.classList.add('open');
+                overlay.classList.add('open');
+            }
+            function closeMenu() {
+                menu.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+            menuBtn.addEventListener('click', openMenu);
+            overlay.addEventListener('click', closeMenu);
+
+            // 2. 自动生成随读笔记目录
+            const noteList = document.getElementById('noteList');
+            const notePages = document.querySelectorAll('.note-page');
+            if (notePages.length === 0) {
+                noteList.innerHTML = '<p class="note-empty">暂无笔记</p>';
+            } else {
+                notePages.forEach(sec => {
+                    const id = sec.id.replace('page-', '');
+                    const title = sec.getAttribute('data-title') || sec.querySelector('h2')?.textContent || '未命名笔记';
+                    const snippet = sec.querySelector('.note-text')?.textContent.trim().slice(0, 60) + '...';
+                    const a = document.createElement('a');
+                    a.className = 'note-item';
+                    a.href = '#' + id;
+                    a.innerHTML = `<span class="nt">${title}</span><span class="ns">${snippet}</span>`;
+                    noteList.appendChild(a);
+                });
+            }
+
+            // 3. 页面切换路由
+            function showPage() {
+                clearHighlights();
+                const hash = location.hash.replace('#', '') || 'home';
+                const targetId = 'page-' + hash;
+                const pages = document.querySelectorAll('.page');
+                let matched = false;
+
+                pages.forEach(p => {
+                    if (p.id === targetId) {
+                        p.classList.add('active');
+                        matched = true;
+                    } else {
+                        p.classList.remove('active');
+                    }
+                });
+
+                if (!matched) {
+                    document.getElementById('page-home').classList.add('active');
+                }
+
+                // 更新菜单高亮与顶部标题
+                const navLinks = menu.querySelectorAll('a');
+                let titleText = '昔日今日';
+                navLinks.forEach(a => {
+                    const isCurrent = a.getAttribute('data-page') === hash || (hash.startsWith('note-') && a.getAttribute('data-page') === 'notes');
+                    a.classList.toggle('current', isCurrent);
+                    if (isCurrent) titleText = a.textContent;
+                });
+                if (hash === 'home') titleText = '昔日今日';
+                topTitle.textContent = titleText;
+
+                scroller.scrollTop = 0;
+                closeMenu();
+            }
+
+            window.addEventListener('hashchange', showPage);
+            showPage();
+
+            // 4. 回到顶部按钮
+            scroller.addEventListener('scroll', () => {
+                toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
+            });
+            toTop.addEventListener('click', () => {
+                scroller.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 5. 页内搜索功能
+            const searchBtn = document.getElementById('searchBtn');
+            const searchBar = document.getElementById('searchBar');
+            const closeBar = document.getElementById('closeBar');
+            const qInput = document.getElementById('q');
+            const countSpan = document.getElementById('count');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
+
+            let hits = [];
+            let currentIdx = -1;
+
+            searchBtn.addEventListener('click', () => {
+                searchBar.classList.add('open');
+                qInput.focus();
+            });
+
+            closeBar.addEventListener('click', () => {
+                searchBar.classList.remove('open');
+                qInput.value = '';
+                clearHighlights();
+            });
+
+            function clearHighlights() {
+                document.querySelectorAll('mark.hit').forEach(mark => {
+                    const parent = mark.parentNode;
+                    parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                    parent.normalize();
+                });
+                hits = [];
+                currentIdx = -1;
+                countSpan.textContent = '';
+            }
+
+            function doSearch() {
+                clearHighlights();
+                const kw = qInput.value.trim();
+                if (!kw) return;
+
+                const activePage = document.querySelector('.page.active');
+                if (!activePage) return;
+
+                const walker = document.createTreeWalker(activePage, NodeFilter.SHOW_TEXT, null, false);
+                const textNodes = [];
+                let node;
+                while ((node = walker.nextNode())) {
+                    if (node.nodeValue.trim() && !['SCRIPT', 'STYLE', 'MARK'].includes(node.parentNode.tagName)) {
+                        textNodes.push(node);
+                    }
+                }
+
+                const escapedKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapedKw})`, 'gi');
+
+                textNodes.forEach(tNode => {
+                    const text = tNode.nodeValue;
+                    if (regex.test(text)) {
+                        const frag = document.createDocumentFragment();
+                        text.split(regex).forEach(part => {
+                            if (part.toLowerCase() === kw.toLowerCase()) {
+                                const mark = document.createElement('mark');
+                                mark.className = 'hit';
+                                mark.textContent = part;
+                                frag.appendChild(mark);
+                                hits.push(mark);
+                            } else if (part) {
+                                frag.appendChild(document.createTextNode(part));
+                            }
+                        });
+                        tNode.parentNode.replaceChild(frag, tNode);
+                    }
+                });
+
+                if (hits.length > 0) {
+                    jumpTo(0);
+                } else {
+                    countSpan.textContent = '0/0';
+                }
+            }
+
+            function jumpTo(idx) {
+                if (hits.length === 0) return;
+                if (currentIdx >= 0 && hits[currentIdx]) {
+                    hits[currentIdx].classList.remove('current');
+                }
+                currentIdx = (idx + hits.length) % hits.length;
+                const target = hits[currentIdx];
+                target.classList.add('current');
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                countSpan.textContent = `${currentIdx + 1}/${hits.length}`;
+            }
+
+            qInput.addEventListener('input', doSearch);
+            qInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    jumpTo(currentIdx + 1);
+                }
+            });
+            prevBtn.addEventListener('click', () => jumpTo(currentIdx - 1));
+            nextBtn.addEventListener('click', () => jumpTo(currentIdx + 1));
+        })();
+    </script>
+</body>
+</html>
