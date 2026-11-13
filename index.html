@@ -402,7 +402,7 @@
                 </div>
                 <div id="boardList"></div>
                 <button class="board-btn light" id="boardMore" type="button" style="display:none">加载更多</button>
-                <div id="boardAdmin"><a href="javascript:void(0)" id="boardAdminLink">站长入口</a></div>
+                <div id="boardAdmin" style="display:none"><a href="javascript:void(0)" id="boardAdminLink">站长入口</a></div>
             </div>
         </section>
     </main>
@@ -943,6 +943,24 @@
         var savedNick = lsGet('board_nick');
         if (savedNick) elName.value = savedNick;
         syncAdminLink();
+
+        /* 站长入口默认隐藏。叫出方式：在留言板页面里，连续点“留言板”标题 5 次（1.5 秒内）。
+           已经进入站长模式时也会显示，方便退出。 */
+        var adminBox = document.getElementById('boardAdmin');
+        function showAdminEntry() { adminBox.style.display = 'block'; }
+        if (adminKey()) showAdminEntry();
+        var boardTitle = document.querySelector('#page-board h2');
+        if (boardTitle) {
+            var taps = 0, tapTimer = null;
+            boardTitle.style.userSelect = 'none';
+            boardTitle.style.webkitUserSelect = 'none';
+            boardTitle.addEventListener('click', function () {
+                taps++;
+                clearTimeout(tapTimer);
+                tapTimer = setTimeout(function () { taps = 0; }, 1500);
+                if (taps >= 5) { taps = 0; showAdminEntry(); }
+            });
+        }
 
         /* 每次进入留言板时刷新一次 */
         function check() { if (location.hash === '#board') load(true); }
