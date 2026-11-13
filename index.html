@@ -28,7 +28,6 @@
         h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
-
         img {
             max-width: 100%;
             height: auto;
@@ -44,11 +43,8 @@
             letter-spacing: 1px;
             color: #444;
         }
-
         .page { display: none; }
         .page.active { display: block; }
-
-        /* 顶部栏 */
         #topbar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -62,149 +58,77 @@
             z-index: 100;
         }
         .iconbtn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            background: #eee;
-            color: #333;
-            font-size: 20px;
-            line-height: 40px;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            padding: 0;
+            width: 40px; height: 40px;
+            border: none; border-radius: 8px;
+            background: #eee; color: #333; font-size: 20px;
+            line-height: 40px; text-align: center; text-decoration: none;
+            cursor: pointer; padding: 0;
         }
         #homeBtn { font-size: 14px; }
         #topTitle { flex: 1; text-align: left; color: #333; font-size: 16px; }
-
-        /* 侧边菜单 */
         #overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0, 0, 0, .4);
-            display: none;
-            z-index: 300;
+            display: none; z-index: 300;
         }
         #overlay.open { display: block; }
         #menu {
-            position: fixed;
-            top: 0; bottom: 0; left: 0;
-            width: 70%;
-            max-width: 260px;
-            background: #fff;
-            transform: translateX(-100%);
-            transition: transform .25s ease;
-            z-index: 400;
-            text-align: left;
-            padding: 16px 0;
+            position: fixed; top: 0; bottom: 0; left: 0;
+            width: 70%; max-width: 260px;
+            background: #fff; transform: translateX(-100%);
+            transition: transform .25s ease; z-index: 400;
+            text-align: left; padding: 16px 0;
             box-shadow: 2px 0 8px rgba(0, 0, 0, .2);
         }
         #menu.open { transform: translateX(0); }
         #menu .menuhead { padding: 4px 20px 12px; color: #999; font-size: 13px; }
         #menu a {
-            display: block;
-            padding: 14px 20px;
-            color: #333;
-            text-decoration: none;
-            font-size: 17px;
+            display: block; padding: 14px 20px;
+            color: #333; text-decoration: none; font-size: 17px;
         }
         #menu a.current { background: #f0f0f7; font-weight: bold; }
-
-        /* 回到顶部按钮 */
         #toTop {
-            position: fixed;
-            right: 16px;
-            bottom: 24px;
-            width: 44px;
-            height: 44px;
-            line-height: 44px;
-            text-align: center;
-            border: none;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, .55);
-            color: #fff;
-            font-size: 20px;
-            padding: 0;
-            cursor: pointer;
-            display: none;
-            z-index: 90;
+            position: fixed; right: 16px; bottom: 24px;
+            width: 44px; height: 44px; line-height: 44px;
+            text-align: center; border: none; border-radius: 50%;
+            background: rgba(0, 0, 0, .55); color: #fff; font-size: 20px;
+            padding: 0; cursor: pointer; display: none; z-index: 90;
         }
-
-        /* 搜索栏 */
         #searchBar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 52px;
-            box-sizing: border-box;
-            display: none;
-            align-items: center;
-            gap: 6px;
-            padding: 0 10px;
-            background: #fff;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
-            z-index: 200;
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 52px; box-sizing: border-box; display: none;
+            align-items: center; gap: 6px; padding: 0 10px;
+            background: #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .2); z-index: 200;
         }
         #searchBar.open { display: flex; }
         #q {
-            flex: 1;
-            min-width: 0;
-            height: 36px;
-            padding: 0 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            flex: 1; min-width: 0; height: 36px;
+            padding: 0 10px; font-size: 16px;
+            border: 1px solid #ccc; border-radius: 6px;
         }
         #count { font-size: 13px; color: #666; white-space: nowrap; }
         #searchBar button {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 6px;
-            background: #eee;
-            font-size: 16px;
-            cursor: pointer;
+            width: 36px; height: 36px; border: none;
+            border-radius: 6px; background: #eee; font-size: 16px; cursor: pointer;
         }
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
-
-        /* 随读笔记 */
         .note-item {
-            display: block;
-            background: #fff;
-            border-radius: 8px;
-            margin: 12px auto;
-            max-width: 640px;
-            padding: 14px 16px;
-            text-align: left;
-            text-decoration: none;
-            color: #333;
+            display: block; background: #fff; border-radius: 8px;
+            margin: 12px auto; max-width: 640px; padding: 14px 16px;
+            text-align: left; text-decoration: none; color: #333;
             box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
         }
         .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
         .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
         .note-empty { color: #888; margin-top: 24px; text-align: center; }
         .backlink {
-            display: block;
-            max-width: 640px;
-            margin: 0 auto 8px;
-            padding: 6px 0;
-            text-align: left;
-            font-size: 15px;
-            color: #555;
-            text-decoration: none;
+            display: block; max-width: 640px; margin: 0 auto 8px;
+            padding: 6px 0; text-align: left; font-size: 15px; color: #555; text-decoration: none;
         }
-        .note-page .note-text {
-            max-width: 640px;
-            margin: 0 auto;
-            text-align: left;
-            line-height: 1.9;
-        }
+        .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
-
-        @media (max-width: 600px) {
-            #scroller { padding-top: 16px; }
-        }
+        @media (max-width: 600px) { #scroller { padding-top: 16px; } }
     </style>
 </head>
 <body>
@@ -214,7 +138,6 @@
         <span id="topTitle">昔日今日</span>
         <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
     </div>
-
     <div id="searchBar">
         <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
         <span id="count"></span>
@@ -222,7 +145,6 @@
         <button id="next" aria-label="下一个">↓</button>
         <button id="closeBar" aria-label="关闭">✕</button>
     </div>
-
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
@@ -231,13 +153,12 @@
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
     </nav>
-
     <div id="scroller">
         <main>
-            <section class="page" id="page-home">
+            <!-- 这里加上了 active，首页就能直接显示出来 -->
+            <section class="page active" id="page-home">
                 <h1>Hello, World!</h1>
-                <p class="verse">【圣经·传道书12章1节】<br>
-                你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
+                <p class="verse">【圣经·传道书12章1节】<br>你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
                 <p>陌生人，你好！</p>
                 <p>个人邮箱：smgxcxdl@163.com</p>
                 <figure>
@@ -256,12 +177,10 @@
                 <p>安らぎを君に</p>
                 <p>命运迷人之处，在于意想不到的转折。</p>
             </section>
-
             <section class="page" id="page-other">
                 <h2>圣经经文</h2>
                 <p>【圣经·哥林多前书15章19节】我们若靠基督只在今生有指望，就算比众人更可怜。</p>
             </section>
-
             <section class="page" id="page-bible">
                 <h2>圣经</h2>
                 <p>浏览器打开下面的网站下载安装：</p>
@@ -269,13 +188,11 @@
                 <p>或</p>
                 <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
             </section>
-
             <section class="page" id="page-notes">
                 <h2>随读笔记</h2>
                 <div id="noteList"></div>
                 <div id="noteResults"></div>
             </section>
-
             <section class="page note-page" id="page-note-1" data-title="美丽新世界">
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
                 <h2>美丽新世界</h2>
@@ -283,7 +200,6 @@
                     <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
                 </div>
             </section>
-
             <section class="page note-page" id="page-note-2" data-title="1984">
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
                 <h2>1984</h2>
@@ -293,9 +209,7 @@
             </section>
         </main>
     </div>
-
     <button id="toTop" aria-label="回到顶部">↑</button>
-
     <script>
         (function () {
             const scroller = document.getElementById('scroller');
@@ -304,20 +218,10 @@
             const overlay = document.getElementById('overlay');
             const topTitle = document.getElementById('topTitle');
             const toTop = document.getElementById('toTop');
-
-            // 1. 侧边菜单控制
-            function openMenu() {
-                menu.classList.add('open');
-                overlay.classList.add('open');
-            }
-            function closeMenu() {
-                menu.classList.remove('open');
-                overlay.classList.remove('open');
-            }
+            function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
+            function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
             menuBtn.addEventListener('click', openMenu);
             overlay.addEventListener('click', closeMenu);
-
-            // 2. 自动生成随读笔记目录
             const noteList = document.getElementById('noteList');
             const notePages = document.querySelectorAll('.note-page');
             if (notePages.length === 0) {
@@ -334,29 +238,16 @@
                     noteList.appendChild(a);
                 });
             }
-
-            // 3. 页面切换路由
             function showPage() {
-                clearHighlights();
                 const hash = location.hash.replace('#', '') || 'home';
                 const targetId = 'page-' + hash;
                 const pages = document.querySelectorAll('.page');
                 let matched = false;
-
                 pages.forEach(p => {
-                    if (p.id === targetId) {
-                        p.classList.add('active');
-                        matched = true;
-                    } else {
-                        p.classList.remove('active');
-                    }
+                    if (p.id === targetId) { p.classList.add('active'); matched = true; }
+                    else { p.classList.remove('active'); }
                 });
-
-                if (!matched) {
-                    document.getElementById('page-home').classList.add('active');
-                }
-
-                // 更新菜单高亮与顶部标题
+                if (!matched) { document.getElementById('page-home').classList.add('active'); }
                 const navLinks = menu.querySelectorAll('a');
                 let titleText = '昔日今日';
                 navLinks.forEach(a => {
@@ -366,123 +257,17 @@
                 });
                 if (hash === 'home') titleText = '昔日今日';
                 topTitle.textContent = titleText;
-
                 scroller.scrollTop = 0;
                 closeMenu();
             }
-
             window.addEventListener('hashchange', showPage);
             showPage();
-
-            // 4. 回到顶部按钮
             scroller.addEventListener('scroll', () => {
                 toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
             });
             toTop.addEventListener('click', () => {
                 scroller.scrollTo({ top: 0, behavior: 'smooth' });
             });
-
-            // 5. 页内搜索功能
-            const searchBtn = document.getElementById('searchBtn');
-            const searchBar = document.getElementById('searchBar');
-            const closeBar = document.getElementById('closeBar');
-            const qInput = document.getElementById('q');
-            const countSpan = document.getElementById('count');
-            const prevBtn = document.getElementById('prev');
-            const nextBtn = document.getElementById('next');
-
-            let hits = [];
-            let currentIdx = -1;
-
-            searchBtn.addEventListener('click', () => {
-                searchBar.classList.add('open');
-                qInput.focus();
-            });
-
-            closeBar.addEventListener('click', () => {
-                searchBar.classList.remove('open');
-                qInput.value = '';
-                clearHighlights();
-            });
-
-            function clearHighlights() {
-                document.querySelectorAll('mark.hit').forEach(mark => {
-                    const parent = mark.parentNode;
-                    parent.replaceChild(document.createTextNode(mark.textContent), mark);
-                    parent.normalize();
-                });
-                hits = [];
-                currentIdx = -1;
-                countSpan.textContent = '';
-            }
-
-            function doSearch() {
-                clearHighlights();
-                const kw = qInput.value.trim();
-                if (!kw) return;
-
-                const activePage = document.querySelector('.page.active');
-                if (!activePage) return;
-
-                const walker = document.createTreeWalker(activePage, NodeFilter.SHOW_TEXT, null, false);
-                const textNodes = [];
-                let node;
-                while ((node = walker.nextNode())) {
-                    if (node.nodeValue.trim() && !['SCRIPT', 'STYLE', 'MARK'].includes(node.parentNode.tagName)) {
-                        textNodes.push(node);
-                    }
-                }
-
-                const escapedKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`(${escapedKw})`, 'gi');
-
-                textNodes.forEach(tNode => {
-                    const text = tNode.nodeValue;
-                    if (regex.test(text)) {
-                        const frag = document.createDocumentFragment();
-                        text.split(regex).forEach(part => {
-                            if (part.toLowerCase() === kw.toLowerCase()) {
-                                const mark = document.createElement('mark');
-                                mark.className = 'hit';
-                                mark.textContent = part;
-                                frag.appendChild(mark);
-                                hits.push(mark);
-                            } else if (part) {
-                                frag.appendChild(document.createTextNode(part));
-                            }
-                        });
-                        tNode.parentNode.replaceChild(frag, tNode);
-                    }
-                });
-
-                if (hits.length > 0) {
-                    jumpTo(0);
-                } else {
-                    countSpan.textContent = '0/0';
-                }
-            }
-
-            function jumpTo(idx) {
-                if (hits.length === 0) return;
-                if (currentIdx >= 0 && hits[currentIdx]) {
-                    hits[currentIdx].classList.remove('current');
-                }
-                currentIdx = (idx + hits.length) % hits.length;
-                const target = hits[currentIdx];
-                target.classList.add('current');
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                countSpan.textContent = `${currentIdx + 1}/${hits.length}`;
-            }
-
-            qInput.addEventListener('input', doSearch);
-            qInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    jumpTo(currentIdx + 1);
-                }
-            });
-            prevBtn.addEventListener('click', () => jumpTo(currentIdx - 1));
-            nextBtn.addEventListener('click', () => jumpTo(currentIdx + 1));
         })();
     </script>
 </body>
