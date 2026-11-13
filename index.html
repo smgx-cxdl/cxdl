@@ -377,12 +377,17 @@
     })();
     </script>
     <div id="sb" style="position:fixed;right:0;top:52px;bottom:0;width:22px;z-index:150;touch-action:none;">
-<div id="sbt" style="position:absolute;right:3px;width:10px;min-height:40px;background:rgba(0,0,0,0.45);border-radius:5px;"></div>
+<div id="sbt" style="position:absolute;right:3px;width:10px;min-height:40px;background:rgba(0,0,0,0.45);border-radius:5px;opacity:0;transition:opacity .3s;"></div>
 </div>
 <script>
 (function(){
 var sc=document.getElementById('scroller'),sb=document.getElementById('sb'),t=document.getElementById('sbt');
-var last=-1,lastH=-1,lastW=-1;
+var last=-1,lastH=-1,lastW=-1,timer=null,drag=false;
+function show(){
+ t.style.opacity='1';
+ clearTimeout(timer);
+ timer=setTimeout(function(){ if(!drag) t.style.opacity='0'; },2500);
+}
 function upd(){
  var h=sc.clientHeight,H=sc.scrollHeight;
  if(H<=h+1){sb.style.display='none';return;}
@@ -400,14 +405,16 @@ function move(y){
 }
 function loop(){
  var y=sc.scrollTop,H=sc.scrollHeight,w=sc.clientHeight;
+ if(y!==last){ if(last!==-1) show(); }
  if(y!==last||H!==lastH||w!==lastW){last=y;lastH=H;lastW=w;upd();}
  requestAnimationFrame(loop);
 }
-var drag=false;
-sb.addEventListener('pointerdown',function(e){drag=true;sb.setPointerCapture(e.pointerId);move(e.clientY);e.preventDefault();});
-sb.addEventListener('pointermove',function(e){if(drag)move(e.clientY);});
-sb.addEventListener('pointerup',function(){drag=false;});
-sb.addEventListener('pointercancel',function(){drag=false;});
+sb.addEventListener('pointerdown',function(e){drag=true;show();sb.setPointerCapture(e.pointerId);move(e.clientY);e.preventDefault();});
+sb.addEventListener('pointermove',function(e){if(drag){move(e.clientY);show();}});
+sb.addEventListener('pointerup',function(){drag=false;show();});
+sb.addEventListener('pointercancel',function(){drag=false;show();});
+sc.addEventListener('touchstart',show,{passive:true});
+sc.addEventListener('touchmove',show,{passive:true});
 sc.addEventListener('scroll',upd);
 window.addEventListener('resize',upd);
 window.addEventListener('load',upd);
