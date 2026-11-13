@@ -14,19 +14,21 @@
             margin: 0;
             overflow: hidden;
         }
-        /* 恢复隐藏滚动条但保留滚动功能 */
         #scroller {
             position: fixed;
             top: 52px; left: 0; right: 0; bottom: 0;
-            overflow-y: auto;
+            overflow-y: scroll;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             box-sizing: border-box;
             padding: 24px 16px 60px;
-            scrollbar-width: none;
+            /* 恢复右侧滚动条 */
+            scrollbar-width: thin;
+            scrollbar-color: #aaa transparent;
         }
-        #scroller::-webkit-scrollbar { display: none; }
-        
+        #scroller::-webkit-scrollbar { width: 8px; }
+        #scroller::-webkit-scrollbar-track { background: transparent; }
+        #scroller::-webkit-scrollbar-thumb { background: #b5b5bd; border-radius: 4px; }
         h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
@@ -96,8 +98,6 @@
             background: rgba(0, 0, 0, .55); color: #fff; font-size: 20px;
             padding: 0; cursor: pointer; display: none; z-index: 90;
         }
-        
-        /* 恢复搜索栏样式 */
         #searchBar {
             position: fixed; top: 0; left: 0; right: 0;
             height: 52px; box-sizing: border-box; display: none;
@@ -117,7 +117,6 @@
         }
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
-
         .note-item {
             display: block; background: #fff; border-radius: 8px;
             margin: 12px auto; max-width: 640px; padding: 14px 16px;
@@ -143,8 +142,6 @@
         <span id="topTitle">昔日今日</span>
         <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
     </div>
-
-    <!-- 恢复搜索栏 HTML -->
     <div id="searchBar">
         <input id="q" type="search" placeholder="输入文字，回车跳转" autocomplete="off">
         <span id="count"></span>
@@ -152,7 +149,6 @@
         <button id="next" aria-label="下一个">↓</button>
         <button id="closeBar" aria-label="关闭">✕</button>
     </div>
-
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
@@ -161,7 +157,6 @@
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
     </nav>
-
     <div id="scroller">
         <main>
             <section class="page active" id="page-home">
@@ -218,7 +213,6 @@
         </main>
     </div>
     <button id="toTop" aria-label="回到顶部">↑</button>
-
     <script>
         (function () {
             const scroller = document.getElementById('scroller');
@@ -227,12 +221,10 @@
             const overlay = document.getElementById('overlay');
             const topTitle = document.getElementById('topTitle');
             const toTop = document.getElementById('toTop');
-
             function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
             function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
             menuBtn.addEventListener('click', openMenu);
             overlay.addEventListener('click', closeMenu);
-
             const noteList = document.getElementById('noteList');
             const notePages = document.querySelectorAll('.note-page');
             if (notePages.length === 0) {
@@ -249,9 +241,7 @@
                     noteList.appendChild(a);
                 });
             }
-
             function showPage() {
-                clearHighlights();
                 const hash = location.hash.replace('#', '') || 'home';
                 const targetId = 'page-' + hash;
                 const pages = document.querySelectorAll('.page');
@@ -261,7 +251,6 @@
                     else { p.classList.remove('active'); }
                 });
                 if (!matched) { document.getElementById('page-home').classList.add('active'); }
-                
                 const navLinks = menu.querySelectorAll('a');
                 let titleText = '昔日今日';
                 navLinks.forEach(a => {
@@ -273,119 +262,143 @@
                 topTitle.textContent = titleText;
                 scroller.scrollTop = 0;
                 closeMenu();
+                // 切换页面时清除搜索高亮（搜索跳转除外）
+                if (!jumping) { clearMarks(); hits = []; cur = -1; updateCount(); }
             }
+
+            /* ============ 搜索功能 ============ */
+            const searchBtn = document.getElementById('searchBtn');
+            const searchBar = document.getElementById('searchBar');
+            const q = document.getElementById('q');
+            const countEl = document.getElementById('count');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
+            const closeBar = document.getElementById('closeBar');
+            let hits = [];
+            let cur = -1;
+            let jumping = false;
+
+            function clearMarks() {
+                scroller.querySelectorAll('mark.hit').forEach(m => {
+                    const parent = m.parentNode;
+                    parent.replaceChild(document.createTextNode(m.textContent), m);
+                    parent.normalize();
+                });
+            }
+
+            function updateCount() {
+                if (!q.value.trim()) countEl.textContent = '';
+                else if (hits.length === 0) countEl.textContent = '无结果';
+                else countEl.textContent = (cur + 1) + '/' + hits.length;
+            }
+
+            function buildHits(keyword) {
+                clearMarks();
+                hits = [];
+                cur = -1;
+                if (!keyword) { updateCount(); return; }
+                const kw = keyword.toLowerCase();
+                const walker = document.createTreeWalker(
+                    scroller.querySelector('main'),
+                    NodeFilter.SHOW_TEXT,
+                    {
+                        acceptNode(node) {
+                            if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                            const p = node.parentNode;
+                            if (p.closest('#noteList, #noteResults, script, style')) return NodeFilter.FILTER_REJECT;
+                            return NodeFilter.FILTER_ACCEPT;
+                        }
+                    }
+                );
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    const text = node.nodeValue;
+                    const lower = text.toLowerCase();
+                    let idx = lower.indexOf(kw);
+                    if (idx === -1) return;
+                    const frag = document.createDocumentFragment();
+                    let last = 0;
+                    while (idx !== -1) {
+                        if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+                        const m = document.createElement('mark');
+                        m.className = 'hit';
+                        m.textContent = text.slice(idx, idx + kw.length);
+                        frag.appendChild(m);
+                        hits.push(m);
+                        last = idx + kw.length;
+                        idx = lower.indexOf(kw, last);
+                    }
+                    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+                    node.parentNode.replaceChild(frag, node);
+                });
+            }
+
+            function goTo(i) {
+                if (hits.length === 0) { updateCount(); return; }
+                if (cur >= 0 && hits[cur]) hits[cur].classList.remove('current');
+                cur = (i + hits.length) % hits.length;
+                const m = hits[cur];
+                m.classList.add('current');
+                // 命中词在其他页面时，先切换到那个页面
+                const page = m.closest('.page');
+                if (page && !page.classList.contains('active')) {
+                    jumping = true;
+                    history.replaceState(null, '', '#' + page.id.replace('page-', ''));
+                    showPage();
+                    jumping = false;
+                }
+                const top = m.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+                scroller.scrollTo({
+                    top: scroller.scrollTop + top - scroller.clientHeight / 3,
+                    behavior: 'smooth'
+                });
+                updateCount();
+            }
+
+            function openSearch() {
+                searchBar.classList.add('open');
+                q.focus();
+                q.select();
+                if (q.value.trim() && hits.length === 0) { buildHits(q.value.trim()); goTo(0); }
+            }
+            function closeSearch() {
+                searchBar.classList.remove('open');
+                clearMarks();
+                hits = [];
+                cur = -1;
+                q.value = '';
+                updateCount();
+                q.blur();
+            }
+
+            searchBtn.addEventListener('click', openSearch);
+            closeBar.addEventListener('click', closeSearch);
+            q.addEventListener('input', () => {
+                buildHits(q.value.trim());
+                if (hits.length) goTo(0); else updateCount();
+            });
+            q.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (hits.length === 0) { buildHits(q.value.trim()); goTo(0); }
+                    else goTo(e.shiftKey ? cur - 1 : cur + 1);
+                } else if (e.key === 'Escape') {
+                    closeSearch();
+                }
+            });
+            nextBtn.addEventListener('click', () => goTo(cur + 1));
+            prevBtn.addEventListener('click', () => goTo(cur - 1));
+            /* ============ 搜索功能结束 ============ */
 
             window.addEventListener('hashchange', showPage);
             showPage();
-
             scroller.addEventListener('scroll', () => {
                 toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
             });
             toTop.addEventListener('click', () => {
                 scroller.scrollTo({ top: 0, behavior: 'smooth' });
             });
-
-            // 恢复页内搜索逻辑
-            const searchBtn = document.getElementById('searchBtn');
-            const searchBar = document.getElementById('searchBar');
-            const closeBar = document.getElementById('closeBar');
-            const qInput = document.getElementById('q');
-            const countSpan = document.getElementById('count');
-            const prevBtn = document.getElementById('prev');
-            const nextBtn = document.getElementById('next');
-
-            let hits = [];
-            let currentIdx = -1;
-
-            searchBtn.addEventListener('click', () => {
-                searchBar.classList.add('open');
-                qInput.focus();
-            });
-
-            closeBar.addEventListener('click', () => {
-                searchBar.classList.remove('open');
-                qInput.value = '';
-                clearHighlights();
-            });
-
-            function clearHighlights() {
-                document.querySelectorAll('mark.hit').forEach(mark => {
-                    const parent = mark.parentNode;
-                    parent.replaceChild(document.createTextNode(mark.textContent), mark);
-                    parent.normalize();
-                });
-                hits = [];
-                currentIdx = -1;
-                countSpan.textContent = '';
-            }
-
-            function doSearch() {
-                clearHighlights();
-                const kw = qInput.value.trim();
-                if (!kw) return;
-
-                const activePage = document.querySelector('.page.active');
-                if (!activePage) return;
-
-                const walker = document.createTreeWalker(activePage, NodeFilter.SHOW_TEXT, null, false);
-                const textNodes = [];
-                let node;
-                while ((node = walker.nextNode())) {
-                    if (node.nodeValue.trim() && !['SCRIPT', 'STYLE', 'MARK'].includes(node.parentNode.tagName)) {
-                        textNodes.push(node);
-                    }
-                }
-
-                const escapedKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`(${escapedKw})`, 'gi');
-
-                textNodes.forEach(tNode => {
-                    const text = tNode.nodeValue;
-                    if (regex.test(text)) {
-                        const frag = document.createDocumentFragment();
-                        text.split(regex).forEach(part => {
-                            if (part.toLowerCase() === kw.toLowerCase()) {
-                                const mark = document.createElement('mark');
-                                mark.className = 'hit';
-                                mark.textContent = part;
-                                frag.appendChild(mark);
-                                hits.push(mark);
-                            } else if (part) {
-                                frag.appendChild(document.createTextNode(part));
-                            }
-                        });
-                        tNode.parentNode.replaceChild(frag, tNode);
-                    }
-                });
-
-                if (hits.length > 0) {
-                    jumpTo(0);
-                } else {
-                    countSpan.textContent = '0/0';
-                }
-            }
-
-            function jumpTo(idx) {
-                if (hits.length === 0) return;
-                if (currentIdx >= 0 && hits[currentIdx]) {
-                    hits[currentIdx].classList.remove('current');
-                }
-                currentIdx = (idx + hits.length) % hits.length;
-                const target = hits[currentIdx];
-                target.classList.add('current');
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                countSpan.textContent = `${currentIdx + 1}/${hits.length}`;
-            }
-
-            qInput.addEventListener('input', doSearch);
-            qInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    jumpTo(currentIdx + 1);
-                }
-            });
-            prevBtn.addEventListener('click', () => jumpTo(currentIdx - 1));
-            nextBtn.addEventListener('click', () => jumpTo(currentIdx + 1));
         })();
     </script>
 </body>
