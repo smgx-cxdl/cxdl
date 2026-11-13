@@ -173,6 +173,33 @@
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
 
+        /* 随读笔记：点标题展开/收起 */
+        .note {
+            background: #fff;
+            border-radius: 8px;
+            margin: 12px auto;
+            max-width: 640px;
+            text-align: left;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+        }
+        .note summary {
+            padding: 14px 16px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            list-style: none;
+        }
+        .note summary::-webkit-details-marker { display: none; }
+        .note summary::before { content: "▸ "; color: #888; }
+        .note[open] summary::before { content: "▾ "; }
+        .note .note-body {
+            padding: 0 16px 16px;
+            line-height: 1.9;
+            color: #222;
+        }
+        .note .note-body p { color: #222; margin: 0 0 10px; }
+
         /* 手机上减少顶部留白 */
         @media (max-width: 600px) {
             #scroller { padding-top: 16px; }
@@ -201,9 +228,10 @@
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
-        <a href="#home" data-page="home">主页 </a>
-        <a href="#other" data-page="other">圣经经文 </a>
+        <a href="#home" data-page="home">主页 主页</a>
+        <a href="#other" data-page="other">圣经经文 其它</a>
         <a href="#bible" data-page="bible">圣经</a>
+        <a href="#notes" data-page="notes">随读笔记</a>
     </nav>
 
     <div id="scroller">
@@ -246,6 +274,18 @@
             <p><a href="https://sjxz1.com" target="_blank" rel="noopener">https://sjxz1.com</a></p>
             <p>或</p>
             <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
+        </section>
+
+        <!-- 板块四：随读笔记（每条：点标题展开内容；新增笔记就复制下面整个 details 块） -->
+        <section class="page" id="page-notes">
+            <h2>随读笔记</h2>
+
+            <details class="note">
+                <summary>美丽新世界</summary>
+                <div class="note-body">
+                    <p>“直到最后那个孩子的思想就是这些话，而这些话就是那个孩子的思想。不只是孩提时的思想，他长大了也会秉承这个思想——一辈子都是这样。思想的判断、欲望和决定都由这些暗示所主宰，而所有的暗示都是我们的暗示！”</p>
+                </div>
+            </details>
         </section>
     </main>
     </div>
@@ -344,6 +384,8 @@
             if (cur >= 0) marks[cur].classList.remove('current');
             cur = (i + marks.length) % marks.length;
             marks[cur].classList.add('current');
+            var dt = marks[cur].closest('details');
+            if (dt) dt.open = true;
             marks[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
             count.textContent = (cur + 1) + '/' + marks.length;
         }
