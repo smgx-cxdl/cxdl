@@ -297,34 +297,6 @@
                 <div id="noteList"></div>
                 <div id="noteResults"></div>
             </section>
-            <!-- ========== 板块五：集与思（入口页，两个部分：篇章 / 零言） ========== -->
-            <section class="page" id="page-collect">
-                <h2>集与思</h2>
-                <a class="note-item" href="#fragments"><span class="nt">零言</span><span class="ns">零散的句子与段落</span></a>
-                <a class="note-item" href="#essays"><span class="nt">篇章</span><span class="ns">文章，点标题阅读全文</span></a>
-            </section>
-            <!-- ========== 集与思·篇章（文章列表，列表由脚本根据下面的 essay-page 自动生成） ========== -->
-            <section class="page" id="page-essays">
-                <a class="backlink" href="#collect">← 返回集与思</a>
-                <h2>篇章</h2>
-                <div id="essayList"></div>
-            </section>
-            <!-- ========== 集与思·篇章·文章内容（新增文章：复制下面整个 essay-page 段，id 依次递增 essay-2、essay-3…，改 data-title、标题和正文） ========== -->
-            <section class="page essay-page" id="page-essay-1" data-title="王怡文库">
-                <a class="backlink" href="#essays">← 返回篇章列表</a>
-                <h2>王怡文库</h2>
-                <div class="note-text">
-                    <p>最近这半年的时间，前后有几位会友问我关于门徒训练的事。我们教会之前做过个人门训的计划，但实际上没有推行下去。我们当时提出：“为一个人流泪，陪一个人成长，带一个人归主”。但是我不知道在这间教会，有多少弟兄姐妹自己仍然在做个人传福音的工作、门训的工作。在2016年，你为谁流泪？陪哪个人成长？带了哪个人归主？我说，我们很亏欠，我自己的服事也很亏欠，我们没有将个人的门训在这间教会中推行下来。有很多的弟兄姐妹，已经有好些年没有带过一个慕道的朋友来教会，也没有向人分享过他信主的见证和耶稣基督的福音，没有为主收割庄稼。</p>
-                </div>
-            </section>
-            <!-- ========== 集与思·零言（句子、段落，风格同“阅读切片”；新增一条复制一行 p，序号依次递增） ========== -->
-            <section class="page frag-page" id="page-fragments">
-                <a class="backlink" href="#collect">← 返回集与思</a>
-                <h2>零言</h2>
-                <div class="note-text">
-                    <p>1、（在这里写第一条）</p>
-                </div>
-            </section>
             <!-- ========== 板块四·笔记内容（下面每个 note-page 是一篇笔记，新增笔记复制一段即可，id 依次递增） ========== -->
             <section class="page note-page" id="page-note-1" data-title="美丽新世界">
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
@@ -418,6 +390,39 @@
                     <p>5、《动物农场》英国</p>
                     <p>6、《算法的力量》</p>
                     <p>7、《原生家庭》</p>
+            </section>
+            <!-- ========== 板块五：集与思（入口页，两个部分：零言 / 篇章） ========== -->
+            <section class="page" id="page-collect">
+                <h2>集与思</h2>
+                <a class="note-item" href="#fragments"><span class="nt">零言</span><span class="ns">零散的句子与段落</span></a>
+                <a class="note-item" href="#essays"><span class="nt">篇章</span><span class="ns">文章，点标题阅读全文</span></a>
+            </section>
+            <!-- ========== 集与思·零言（句子、段落，风格同“阅读切片”；新增一条复制一行 p，序号依次递增） ========== -->
+            <section class="page frag-page" id="page-fragments">
+                <a class="backlink" href="#collect">← 返回集与思</a>
+                <h2>零言</h2>
+                <div class="note-text">
+                    <p>1、圣经这本书，一开始看上去也像一本大历史，但读到一半，发现一个令人惊讶的事实，我所了解的人类自我记载的历史叙事，并没有进入圣经的叙述体系。人类自我认同的历史人物，我是说我们过去认定的那些青史留名的大人物，圣经几乎只字不提，或一笔带过。</p>
+                    <p>2、…事实就是这样，当人类失去终极的目的意义，事实上人类也失去了思想的第一推动力。由此人类要么走向空前的无聊，要么走向傲慢与疯癫。而这一切都是从思想开始的。...人类社会开始陷入一种普遍的无聊大爆发之中。...</p>
+                    <p>3、没有什么能够保证你另有机会转向神。如果你现在不来就祂，你就会发现，由于受罪的欺骗，你将变得越来越刚硬。《警告未归正的人》</p>
+                    <p>4、你为何不静下来仔细思考一下你将在何处度过永恒？你的死只不过是个时间问题。《警告未归正的人》</p>
+                    <p>5、 若不认识基督，你的生活就毫无意义《警告未归正的人》</p>
+                    <p>6、什么是作恶，这是个问题。如果立足于人类的信仰传统，如果有能力进入思想史，那么我们有理由认为，人真正的作恶是挑战上帝创造的秩序，而且每次挑战都以人类失败告终，并且给人类留下永远的伤疤。</p>
+                </div>
+            </section>
+            <!-- ========== 集与思·篇章（文章列表，列表由脚本根据下面的 essay-page 自动生成） ========== -->
+            <section class="page" id="page-essays">
+                <a class="backlink" href="#collect">← 返回集与思</a>
+                <h2>篇章</h2>
+                <div id="essayList"></div>
+            </section>
+            <!-- ========== 集与思·篇章·文章内容（新增文章：复制下面整个 essay-page 段，id 依次递增 essay-2、essay-3…，改 data-title、标题和正文） ========== -->
+            <section class="page essay-page" id="page-essay-1" data-title="王怡文库">
+                <a class="backlink" href="#essays">← 返回篇章列表</a>
+                <h2>王怡文库</h2>
+                <div class="note-text">
+                    <p>最近这半年的时间，前后有几位会友问我关于门徒训练的事。我们教会之前做过个人门训的计划，但实际上没有推行下去。我们当时提出：“为一个人流泪，陪一个人成长，带一个人归主”。但是我不知道在这间教会，有多少弟兄姐妹自己仍然在做个人传福音的工作、门训的工作。在2016年，你为谁流泪？陪哪个人成长？带了哪个人归主？我说，我们很亏欠，我自己的服事也很亏欠，我们没有将个人的门训在这间教会中推行下来。有很多的弟兄姐妹，已经有好些年没有带过一个慕道的朋友来教会，也没有向人分享过他信主的见证和耶稣基督的福音，没有为主收割庄稼。</p>
+                </div>
             </section>
         </main>
     </div>
@@ -586,7 +591,7 @@
                 const page = m.closest('.page');
                 if (page && !page.classList.contains('active')) {
                     jumping = true;
-                    history.replaceState(null, '', '#' + page.id.replace('page-', ''));
+                    history.replaceState({ d: depth }, '', '#' + page.id.replace('page-', ''));
                     showPage();
                     jumping = false;
                 }
@@ -677,8 +682,58 @@
             /* ============ 滚动条结束 ============ */
 
             /* ========== 脚本：启动与回到顶部按钮 ========== */
-            window.addEventListener('hashchange', showPage);
-            showPage();
+            /* ========== 脚本：返回键逻辑（主页是返回的最后一步，再返回就退出网站） ========== */
+            // 浏览器历史始终保持为：主页 → 当前页面所在的层级路径，菜单跳转不会堆积历史
+            let depth = 0, pending = null;
+            function curHash() {
+                const h = location.hash.replace('#', '') || 'home';
+                return document.getElementById('page-' + h) ? h : 'home';
+            }
+            function pathOf(h) {
+                if (h === 'home' || !document.getElementById('page-' + h)) return [];
+                if (h.startsWith('note-')) return ['notes', h];
+                if (h.startsWith('essay-')) return ['collect', 'essays', h];
+                if (h === 'essays' || h === 'fragments') return ['collect', h];
+                return [h];
+            }
+            function parentOf(h) {
+                const p = pathOf(h);
+                return p.length > 1 ? p[p.length - 2] : (p.length === 1 ? 'home' : null);
+            }
+            function pushPath(path) {
+                path.forEach(h => { depth++; history.pushState({ d: depth }, '', '#' + h); });
+                showPage();
+            }
+            function navigate(target) {
+                const cur = curHash();
+                if (!document.getElementById('page-' + target) || target === cur) { closeMenu(); return; }
+                if (target === 'home') {
+                    if (depth > 0) history.go(-depth);
+                    else { history.replaceState({ d: 0 }, '', location.pathname + location.search); showPage(); }
+                    return;
+                }
+                if (parentOf(target) === cur) { pushPath([target]); return; }          // 进入下一层
+                if (parentOf(cur) === target && depth > 0) { history.back(); return; } // 返回上一层
+                if (depth === 0) { pushPath(pathOf(target)); return; }
+                pending = pathOf(target);                                              // 跳到别的板块：先退回主页再进入
+                history.go(-depth);
+            }
+            window.addEventListener('popstate', e => {
+                depth = (e.state && e.state.d) || 0;
+                if (pending && depth === 0) { const p = pending; pending = null; pushPath(p); }
+                else showPage();
+            });
+            document.addEventListener('click', e => {
+                const a = e.target.closest('a[href^="#"]');
+                if (!a || a.target === '_blank') return;
+                e.preventDefault();
+                navigate(a.getAttribute('href').slice(1));
+            });
+            try {
+                const initPath = pathOf(curHash());
+                history.replaceState({ d: 0 }, '', location.pathname + location.search);
+                if (initPath.length) pushPath(initPath); else showPage();
+            } catch (err) { showPage(); }
             scroller.addEventListener('scroll', () => {
                 toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
             });
