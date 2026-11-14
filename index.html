@@ -150,6 +150,25 @@
         }
         .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
+        /* ========== 样式：收录条目（原文 / 译 / 释），标签由CSS生成，不影响搜索与列表摘要 ========== */
+        .clip { margin: 0 0 26px; padding: 0 0 22px; border-bottom: 1px dashed #d4d4de; }
+        .clip:last-child { border-bottom: none; }
+        .clip .orig {
+            border-left: 3px solid #4a7bd0; padding: 2px 0 2px 12px;
+            font-family: Georgia, "Times New Roman", serif; font-size: 17px;
+            line-height: 1.7; color: #1a1a1a; font-weight: bold;
+        }
+        .clip .no { color: #4a7bd0; margin-right: 6px; }
+        .clip .tr, .clip .ex { margin-top: 12px; line-height: 1.9; color: #222; }
+        .clip .tr::before, .clip .ex::before {
+            display: inline-block; margin-right: 8px; padding: 0 7px;
+            border-radius: 4px; font-size: 12px; line-height: 20px;
+            vertical-align: 1px; font-weight: normal; color: #fff;
+        }
+        .clip .tr::before { content: '译'; background: #4a7bd0; }
+        .clip .ex::before { content: '释'; background: #e0912f; }
+        .clip .ex { color: #555; font-size: 15px; }
+        .clip .src { margin-top: 8px; font-size: 13px; color: #999; text-align: right; }
         /* ========== 样式：可拖动滚动条 ========== */
         /* 自定义可拖动滚动条（手机上系统滚动条无法拖动） */
         #sbTrack { position: fixed; top: 52px; right: 0; bottom: 0; width: 22px; z-index: 80; touch-action: none; display: none; }
@@ -279,7 +298,12 @@
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
                 <h2>网络收录2</h2>
                 <div class="note-text">
-                    <p><strong>1、ivilization is a competition to see who can become the most evil person in history<strong>文明是一场竞赛，看谁能成为历史上最邪恶的人。随着文明和科技的发展，人类行善的能力在增强，但作恶的效率也在呈指数级上升。冷兵器时代一个暴君能伤害的人数有限，而现代工业、核武器、信息监控和金融体系，让极少数掌权者拥有了毁灭整个人类或精准控制亿万人的能力。每一代新的“恶人”都在借助更先进的文明工具，不断刷新历史灾难的规模纪录。</p>
+                    <!-- 新增一条：复制下面整个 clip 块。没有译或释就删掉对应那一行；不需要来源就删掉 src 行 -->
+                    <div class="clip">
+                        <div class="orig"><span class="no">1、</span>Civilization is a competition to see who can become the most evil person in history.</div>
+                        <div class="tr">文明是一场竞赛，看谁能成为历史上最邪恶的人。</div>
+                        <div class="ex">随着文明和科技的发展，人类行善的能力在增强，但作恶的效率也在呈指数级上升。冷兵器时代一个暴君能伤害的人数有限，而现代工业、核武器、信息监控和金融体系，让极少数掌权者拥有了毁灭整个人类或精准控制亿万人的能力。每一代新的“恶人”都在借助更先进的文明工具，不断刷新历史灾难的规模纪录。</div>
+                    </div>
                 </div>
             </section>
              <section class="page note-page" id="page-note-5" data-title="阅读切片">
