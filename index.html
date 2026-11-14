@@ -393,8 +393,10 @@
                 });
             }
             /* ========== 脚本：页面切换（根据网址 # 显示对应板块） ========== */
+            let prevHash = '', notesScroll = 0;
             function showPage() {
                 const hash = location.hash.replace('#', '') || 'home';
+                if (prevHash === 'notes') notesScroll = scroller.scrollTop;
                 const targetId = 'page-' + hash;
                 const pages = document.querySelectorAll('.page');
                 let matched = false;
@@ -412,7 +414,8 @@
                 });
                 if (hash === 'home') titleText = '昔日今日';
                 topTitle.textContent = titleText;
-                scroller.scrollTop = 0;
+                scroller.scrollTop = (hash === 'notes' && prevHash.startsWith('note-')) ? notesScroll : 0;
+                prevHash = hash;
                 closeMenu();
                 // 切换页面时清除搜索高亮（搜索跳转除外）
                 if (!jumping) { clearMarks(); hits = []; cur = -1; updateCount(); }
