@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>昔日今日</title>
     <style>
+        /* ========== 样式：页面整体（html / body） ========== */
         html { scroll-behavior: smooth; }
         body {
             text-align: center;
@@ -14,6 +15,7 @@
             margin: 0;
             overflow: hidden;
         }
+        /* ========== 样式：内容滚动区 ========== */
         #scroller {
             position: fixed;
             top: 52px; left: 0; right: 0; bottom: 0;
@@ -29,6 +31,7 @@
         #scroller::-webkit-scrollbar { display: none; }
         #scroller::-webkit-scrollbar-track { background: transparent; }
         #scroller::-webkit-scrollbar-thumb { background: #b5b5bd; border-radius: 4px; }
+        /* ========== 样式：文字、链接、图片 ========== */
         h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
@@ -53,8 +56,10 @@
             letter-spacing: 1px;
             color: #444;
         }
+        /* ========== 样式：页面切换显示 ========== */
         .page { display: none; }
         .page.active { display: block; }
+        /* ========== 样式：顶部栏（菜单键 / 首页键 / 标题 / 搜索键） ========== */
         #topbar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -76,6 +81,7 @@
         }
         #homeBtn { font-size: 14px; }
         #topTitle { flex: 1; text-align: left; color: #333; font-size: 16px; }
+        /* ========== 样式：侧边菜单 ========== */
         #overlay {
             position: fixed; inset: 0;
             background: rgba(0, 0, 0, .4);
@@ -98,6 +104,7 @@
             border-bottom: none;
         }
         #menu a.current { background: #f0f0f7; font-weight: bold; }
+        /* ========== 样式：回到顶部按钮 ========== */
         #toTop {
             position: fixed; right: 16px; bottom: 24px;
             width: 44px; height: 44px; line-height: 44px;
@@ -105,6 +112,7 @@
             background: rgba(0, 0, 0, .55); color: #fff; font-size: 20px;
             padding: 0; cursor: pointer; display: none; z-index: 90;
         }
+        /* ========== 样式：搜索栏与搜索高亮 ========== */
         #searchBar {
             position: fixed; top: 0; left: 0; right: 0;
             height: 52px; box-sizing: border-box; display: none;
@@ -124,6 +132,7 @@
         }
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
+        /* ========== 样式：随读笔记（列表卡片 / 笔记页） ========== */
         .note-item {
             display: block; background: #fff; border-radius: 8px;
             margin: 12px auto; max-width: 640px; padding: 14px 16px;
@@ -141,12 +150,14 @@
         }
         .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
+        /* ========== 样式：可拖动滚动条 ========== */
         /* 自定义可拖动滚动条（手机上系统滚动条无法拖动） */
         #sbTrack { position: fixed; top: 52px; right: 0; bottom: 0; width: 22px; z-index: 80; touch-action: none; display: none; }
         #sbThumb { position: absolute; top: 0; right: 3px; width: 6px; border-radius: 3px; background: rgba(90, 90, 110, .55); touch-action: none; cursor: pointer; transition: width .15s, background .15s; }
         #sbThumb::before { content: ''; position: absolute; top: 0; bottom: 0; left: -14px; right: -3px; }
         #sbThumb.drag { width: 10px; background: rgba(60, 60, 80, .8); }
         @media (max-width: 600px) { #scroller { padding-top: 16px; } }
+        /* ========== 样式：圣经经文排版（板块二） ========== */
         .vs { display: flex; align-items: flex-start; max-width: 640px; margin: 18px auto; text-align: left; line-height: 1.8; color: #666; }
         .vn { flex: none; white-space: nowrap; }
         .vb { flex: 1; min-width: 0; }
@@ -175,9 +186,9 @@
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
     </nav>
- 板块一
     <div id="scroller">
         <main>
+            <!-- ========== 板块一：主页（首页） ========== -->
             <section class="page active" id="page-home">
                 <h1>Hello, World!</h1>
                 <p class="verse">【圣经·传道书12章1节】<br>你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
@@ -204,8 +215,8 @@
                     如果你有任何建议、问题，或者想与我交流，可以通过电子邮件联系我。<br>
                     <a href="mailto:smgxcxdl@163.com">smgxcxdl@163.com</a>
                 </p>
-板块二
             </section>
+            <!-- ========== 板块二：圣经经文 ========== -->
             <section class="page" id="page-other">
                 <h2>圣经经文</h2>
                 <div class="vs"><span class="vn">1、</span><div class="vb"><strong>圣经·哥林多前书15章19节</strong><br>我们若靠基督只在今生有指望，就算比众人更可怜。</div></div>
@@ -215,7 +226,7 @@
                 <div class="vs"><span class="vn">5、</span><div class="vb"><strong>圣经·罗马书12章2节</strong><br>不要效法这个世界，只要心意更新而变化，叫你们察验何为　神的善良、纯全、可喜悦的旨意。</div></div>
                 <div class="vs"><span class="vn">6、</span><div class="vb"><strong>圣经·约翰一书2章15-17节</strong><br>不要爱世界和世界上的事。人若爱世界，爱父的心就不在他里面了。因为凡世界上的事，就像肉体的情欲，眼目的情欲，并今生的骄傲，都不是从父来的，乃是从世界来的。这世界和其上的情欲都要过去，惟独遵行　神旨意的，是永远常存。</div></div>
             </section>
-板块三
+            <!-- ========== 板块三：圣经软件下载 ========== -->
             <section class="page" id="page-bible">
                 <h2>圣经</h2>
                 <p>浏览器打开下面的网站下载安装：</p>
@@ -223,12 +234,13 @@
                 <p>或</p>
                 <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
             </section>
-板块四
+            <!-- ========== 板块四：随读笔记（笔记列表，列表由脚本自动生成） ========== -->
             <section class="page" id="page-notes">
                 <h2>随读笔记</h2>
                 <div id="noteList"></div>
                 <div id="noteResults"></div>
             </section>
+            <!-- ========== 板块四·笔记内容（下面每个 note-page 是一篇笔记，新增笔记复制一段即可，id 依次递增） ========== -->
             <section class="page note-page" id="page-note-1" data-title="美丽新世界">
                 <a class="backlink" href="#notes">← 返回笔记列表</a>
                 <h2>美丽新世界</h2>
@@ -263,6 +275,7 @@
     <button id="toTop" aria-label="回到顶部">↑</button>
     <script>
         (function () {
+            /* ========== 脚本：基础变量与侧边菜单开关 ========== */
             const scroller = document.getElementById('scroller');
             const menuBtn = document.getElementById('menuBtn');
             const menu = document.getElementById('menu');
@@ -273,6 +286,7 @@
             function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
             menuBtn.addEventListener('click', openMenu);
             overlay.addEventListener('click', closeMenu);
+            /* ========== 脚本：笔记列表自动生成 ========== */
             const noteList = document.getElementById('noteList');
             const notePages = document.querySelectorAll('.note-page');
             if (notePages.length === 0) {
@@ -289,6 +303,7 @@
                     noteList.appendChild(a);
                 });
             }
+            /* ========== 脚本：页面切换（根据网址 # 显示对应板块） ========== */
             function showPage() {
                 const hash = location.hash.replace('#', '') || 'home';
                 const targetId = 'page-' + hash;
@@ -482,6 +497,7 @@
             });
             /* ============ 滚动条结束 ============ */
 
+            /* ========== 脚本：启动与回到顶部按钮 ========== */
             window.addEventListener('hashchange', showPage);
             showPage();
             scroller.addEventListener('scroll', () => {
