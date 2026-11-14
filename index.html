@@ -150,6 +150,10 @@
         }
         .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
         .note-page .note-text p { color: #222; }
+        /* ========== 样式：集与思（篇章文章页 / 零言页） ========== */
+        .essay-page .note-text, .frag-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
+        .essay-page .note-text p, .frag-page .note-text p { color: #222; }
+        .essay-page .note-text p { text-indent: 2em; }
         /* ========== 样式：收录条目（原文 / 译 / 释），标签由CSS生成，不影响搜索与列表摘要 ========== */
         .clip { margin: 0 0 14px; padding: 0 0 12px; border-bottom: 1px dashed #d4d4de; }
         .clip:last-child { border-bottom: none; }
@@ -211,6 +215,7 @@
         <a href="#other" data-page="other">圣经经文</a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
+        <a href="#collect" data-page="collect">集与思</a>
     </nav>
     <div id="scroller">
         <main>
@@ -291,6 +296,34 @@
                 <h2>随读笔记</h2>
                 <div id="noteList"></div>
                 <div id="noteResults"></div>
+            </section>
+            <!-- ========== 板块五：集与思（入口页，两个部分：篇章 / 零言） ========== -->
+            <section class="page" id="page-collect">
+                <h2>集与思</h2>
+                <a class="note-item" href="#essays"><span class="nt">篇章</span><span class="ns">文章，点标题阅读全文</span></a>
+                <a class="note-item" href="#fragments"><span class="nt">零言</span><span class="ns">零散的句子与段落</span></a>
+            </section>
+            <!-- ========== 集与思·篇章（文章列表，列表由脚本根据下面的 essay-page 自动生成） ========== -->
+            <section class="page" id="page-essays">
+                <a class="backlink" href="#collect">← 返回集与思</a>
+                <h2>篇章</h2>
+                <div id="essayList"></div>
+            </section>
+            <!-- ========== 集与思·篇章·文章内容（新增文章：复制下面整个 essay-page 段，id 依次递增 essay-2、essay-3…，改 data-title、标题和正文） ========== -->
+            <section class="page essay-page" id="page-essay-1" data-title="王怡文库">
+                <a class="backlink" href="#essays">← 返回篇章列表</a>
+                <h2>王怡文库</h2>
+                <div class="note-text">
+                    <p>最近这半年的时间，前后有几位会友问我关于门徒训练的事。我们教会之前做过个人门训的计划，但实际上没有推行下去。我们当时提出：“为一个人流泪，陪一个人成长，带一个人归主”。但是我不知道在这间教会，有多少弟兄姐妹自己仍然在做个人传福音的工作、门训的工作。在2016年，你为谁流泪？陪哪个人成长？带了哪个人归主？我说，我们很亏欠，我自己的服事也很亏欠，我们没有将个人的门训在这间教会中推行下来。有很多的弟兄姐妹，已经有好些年没有带过一个慕道的朋友来教会，也没有向人分享过他信主的见证和耶稣基督的福音，没有为主收割庄稼。</p>
+                </div>
+            </section>
+            <!-- ========== 集与思·零言（句子、段落，风格同“阅读切片”；新增一条复制一行 p，序号依次递增） ========== -->
+            <section class="page frag-page" id="page-fragments">
+                <a class="backlink" href="#collect">← 返回集与思</a>
+                <h2>零言</h2>
+                <div class="note-text">
+                    <p>1、（在这里写第一条）</p>
+                </div>
             </section>
             <!-- ========== 板块四·笔记内容（下面每个 note-page 是一篇笔记，新增笔记复制一段即可，id 依次递增） ========== -->
             <section class="page note-page" id="page-note-1" data-title="美丽新世界">
@@ -421,11 +454,29 @@
                     noteList.appendChild(a);
                 });
             }
+            /* ========== 脚本：篇章列表自动生成 ========== */
+            const essayList = document.getElementById('essayList');
+            const essayPages = document.querySelectorAll('.essay-page');
+            if (essayPages.length === 0) {
+                essayList.innerHTML = '<p class="note-empty">暂无文章</p>';
+            } else {
+                essayPages.forEach(sec => {
+                    const id = sec.id.replace('page-', '');
+                    const title = sec.getAttribute('data-title') || sec.querySelector('h2')?.textContent || '未命名文章';
+                    const snippet = sec.querySelector('.note-text')?.textContent.trim().slice(0, 60) + '...';
+                    const a = document.createElement('a');
+                    a.className = 'note-item';
+                    a.href = '#' + id;
+                    a.innerHTML = `<span class="nt">${title}</span><span class="ns">${snippet}</span>`;
+                    essayList.appendChild(a);
+                });
+            }
             /* ========== 脚本：页面切换（根据网址 # 显示对应板块） ========== */
-            let prevHash = '', notesScroll = 0;
+            let prevHash = '', notesScroll = 0, essaysScroll = 0;
             function showPage() {
                 const hash = location.hash.replace('#', '') || 'home';
                 if (prevHash === 'notes') notesScroll = scroller.scrollTop;
+                if (prevHash === 'essays') essaysScroll = scroller.scrollTop;
                 const targetId = 'page-' + hash;
                 const pages = document.querySelectorAll('.page');
                 let matched = false;
@@ -437,13 +488,17 @@
                 const navLinks = menu.querySelectorAll('a');
                 let titleText = '昔日今日';
                 navLinks.forEach(a => {
-                    const isCurrent = a.getAttribute('data-page') === hash || (hash.startsWith('note-') && a.getAttribute('data-page') === 'notes');
+                    const inCollect = hash === 'essays' || hash === 'fragments' || hash.startsWith('essay-');
+                    const isCurrent = a.getAttribute('data-page') === hash
+                        || (hash.startsWith('note-') && a.getAttribute('data-page') === 'notes')
+                        || (inCollect && a.getAttribute('data-page') === 'collect');
                     a.classList.toggle('current', isCurrent);
                     if (isCurrent) titleText = a.textContent;
                 });
                 if (hash === 'home') titleText = '昔日今日';
                 topTitle.textContent = titleText;
-                scroller.scrollTop = (hash === 'notes' && prevHash.startsWith('note-')) ? notesScroll : 0;
+                scroller.scrollTop = (hash === 'notes' && prevHash.startsWith('note-')) ? notesScroll
+                    : (hash === 'essays' && prevHash.startsWith('essay-')) ? essaysScroll : 0;
                 prevHash = hash;
                 closeMenu();
                 // 切换页面时清除搜索高亮（搜索跳转除外）
