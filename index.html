@@ -730,9 +730,15 @@
                 navigate(a.getAttribute('href').slice(1));
             });
             try {
-                const initPath = pathOf(curHash());
-                history.replaceState({ d: 0 }, '', location.pathname + location.search);
-                if (initPath.length) pushPath(initPath); else showPage();
+                if (history.state && typeof history.state.d === 'number') {
+                    // 刷新页面：历史记录已经是规范结构，直接沿用，避免刷新一次多叠一层
+                    depth = history.state.d;
+                    showPage();
+                } else {
+                    const initPath = pathOf(curHash());
+                    history.replaceState({ d: 0 }, '', location.pathname + location.search);
+                    if (initPath.length) pushPath(initPath); else showPage();
+                }
             } catch (err) { showPage(); }
             scroller.addEventListener('scroll', () => {
                 toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
