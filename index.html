@@ -317,6 +317,7 @@
             function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
             menuBtn.addEventListener('click', openMenu);
             overlay.addEventListener('click', closeMenu);
+            menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
             /* ========== 脚本：笔记列表自动生成 ========== */
             const noteList = document.getElementById('noteList');
             const notePages = document.querySelectorAll('.note-page');
