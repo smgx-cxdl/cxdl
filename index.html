@@ -5,172 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>昔日今日</title>
     <style>
-        /* ========== 样式：页面整体（html / body） ========== */
-        html { scroll-behavior: smooth; }
-        body {
-            text-align: center;
-            padding: 0;
-            font-family: sans-serif;
-            background: #f4f4f9;
-            margin: 0;
-            overflow: hidden;
-        }
-        /* ========== 样式：内容滚动区 ========== */
+        /* ===== 整体 ===== */
+        body { text-align: center; padding: 0; margin: 0; font-family: sans-serif; background: #f4f4f9; overflow: hidden; }
         #scroller {
-            position: fixed;
-            top: 52px; left: 0; right: 0; bottom: 0;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            box-sizing: border-box;
-            padding: 24px 16px 60px;
-            /* 恢复右侧滚动条 */
+            position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
+            overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+            box-sizing: border-box; padding: 24px 16px 60px;
             scrollbar-width: none;
-            scrollbar-color: #aaa transparent;
         }
         #scroller::-webkit-scrollbar { display: none; }
-        #scroller::-webkit-scrollbar-track { background: transparent; }
-        #scroller::-webkit-scrollbar-thumb { background: #b5b5bd; border-radius: 4px; }
-        /* ========== 样式：文字、链接、图片 ========== */
+        @media (max-width: 600px) { #scroller { padding-top: 16px; } }
+
+        /* ===== 文字、链接、图片 ===== */
         h1, h2 { color: #333; }
         p { color: #666; }
         .verse { color: #000; line-height: 1.8; }
-        /* 统一优化链接样式 */
-        main a {
-            color: #4a7bd0;
-            text-decoration: none;
-            border-bottom: 1px dashed #4a7bd0;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
-        }
+        main a { color: #4a7bd0; text-decoration: none; border-bottom: 1px dashed #4a7bd0; }
+        img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px; }
         figure { margin: 0 auto; }
         figcaption {
-            margin: 8px 0 4px;
+            margin: 8px 0 4px; font-size: 17px; letter-spacing: 1px; color: #444;
             font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", "BiauKai", "DFKai-SB", serif;
-            font-size: 17px;
-            letter-spacing: 1px;
-            color: #444;
         }
-        /* ========== 样式：页面切换显示 ========== */
+
+        /* ===== 页面切换 ===== */
         .page { display: none; }
         .page.active { display: block; }
-        /* ========== 样式：顶部栏（菜单键 / 首页键 / 标题 / 搜索键） ========== */
+
+        /* ===== 顶部栏 ===== */
         #topbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 10px;
-            background: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
-            z-index: 100;
+            position: fixed; top: 0; left: 0; right: 0; height: 52px;
+            display: flex; align-items: center; gap: 8px; padding: 0 10px;
+            background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .15); z-index: 100;
         }
         .iconbtn {
-            width: 40px; height: 40px;
-            border: none; border-radius: 8px;
-            background: #eee; color: #333; font-size: 20px;
-            line-height: 40px; text-align: center; text-decoration: none;
-            cursor: pointer; padding: 0;
+            width: 40px; height: 40px; padding: 0; border: none; border-radius: 8px;
+            background: #eee; color: #333; font-size: 20px; line-height: 40px;
+            text-align: center; text-decoration: none; cursor: pointer;
         }
         #homeBtn { font-size: 14px; }
         #topTitle { flex: 1; text-align: left; color: #333; font-size: 16px; }
-        /* ========== 样式：侧边菜单 ========== */
-        #overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, .4);
-            display: none; z-index: 300;
-        }
+        #searchBtn { filter: grayscale(1); opacity: .65; }
+
+        /* ===== 侧边菜单 ===== */
+        #overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); display: none; z-index: 300; }
         #overlay.open { display: block; }
         #menu {
-            position: fixed; top: 0; bottom: 0; left: 0;
-            width: 70%; max-width: 260px;
-            background: #fff; transform: translateX(-100%);
-            transition: transform .25s ease; z-index: 400;
-            text-align: left; padding: 16px 0;
-            box-shadow: 2px 0 8px rgba(0, 0, 0, .2);
+            position: fixed; top: 0; bottom: 0; left: 0; width: 70%; max-width: 260px;
+            background: #fff; transform: translateX(-100%); transition: transform .25s ease;
+            z-index: 400; text-align: left; padding: 16px 0; box-shadow: 2px 0 8px rgba(0, 0, 0, .2);
         }
         #menu.open { transform: translateX(0); }
         #menu .menuhead { padding: 4px 20px 12px; color: #999; font-size: 13px; }
-        #menu a {
-            display: block; padding: 14px 20px;
-            color: #333; text-decoration: none; font-size: 17px;
-            border-bottom: none;
-        }
+        #menu a { display: block; padding: 14px 20px; color: #333; text-decoration: none; font-size: 17px; border-bottom: none; }
         #menu a.current { background: #f0f0f7; font-weight: bold; }
-        /* ========== 样式：回到顶部按钮 ========== */
+
+        /* ===== 回到顶部 ===== */
         #toTop {
-            position: fixed; right: 16px; bottom: 24px;
-            width: 44px; height: 44px; line-height: 44px;
-            text-align: center; border: none; border-radius: 50%;
-            background: rgba(0, 0, 0, .55); color: #fff; font-size: 20px;
-            padding: 0; cursor: pointer; display: none; z-index: 90;
+            position: fixed; right: 16px; bottom: 24px; width: 44px; height: 44px; padding: 0;
+            line-height: 44px; text-align: center; border: none; border-radius: 50%;
+            background: rgba(0, 0, 0, .55); color: #fff; font-size: 20px; cursor: pointer; display: none; z-index: 90;
         }
-        /* ========== 样式：搜索栏与搜索高亮 ========== */
+
+        /* ===== 搜索栏与高亮 ===== */
         #searchBar {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 52px; box-sizing: border-box; display: none;
-            align-items: center; gap: 6px; padding: 0 10px;
+            position: fixed; top: 0; left: 0; right: 0; height: 52px; box-sizing: border-box;
+            display: none; align-items: center; gap: 6px; padding: 0 10px;
             background: #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .2); z-index: 200;
         }
         #searchBar.open { display: flex; }
-        #q {
-            flex: 1; min-width: 0; height: 36px;
-            padding: 0 10px; font-size: 16px;
-            border: 1px solid #ccc; border-radius: 6px;
-        }
+        #q { flex: 1; min-width: 0; height: 36px; padding: 0 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
         #count { font-size: 13px; color: #666; white-space: nowrap; }
-        #searchBar button {
-            width: 36px; height: 36px; border: none;
-            border-radius: 6px; background: #eee; font-size: 16px; cursor: pointer;
-        }
+        #searchBar button { width: 36px; height: 36px; border: none; border-radius: 6px; background: #eee; font-size: 16px; cursor: pointer; }
         mark.hit { background: #ffe58a; color: inherit; border-radius: 2px; }
         mark.hit.current { background: #ff9f43; }
-        /* ========== 样式：随读笔记（列表卡片 / 笔记页） ========== */
+
+        /* ===== 列表卡片（随读笔记 / 篇章） ===== */
         .note-item {
-            display: block; background: #fff; border-radius: 8px;
-            margin: 12px auto; max-width: 640px; padding: 14px 16px;
-            text-align: left; text-decoration: none; color: #333;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-            border-bottom: none !important;
+            display: block; background: #fff; border-radius: 8px; margin: 12px auto; max-width: 640px;
+            padding: 14px 16px; text-align: left; text-decoration: none; color: #333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1); border-bottom: none !important;
         }
         .note-item .nt { display: block; font-size: 17px; font-weight: bold; }
         .note-item .ns { display: block; margin-top: 6px; font-size: 14px; color: #777; line-height: 1.6; }
         .note-empty { color: #888; margin-top: 24px; text-align: center; }
         .backlink {
-            display: block; max-width: 640px; margin: 0 auto 8px;
-            padding: 6px 0; text-align: left; font-size: 15px; color: #555; text-decoration: none;
-            border-bottom: none;
+            display: block; max-width: 640px; margin: 0 auto 8px; padding: 6px 0;
+            text-align: left; font-size: 15px; color: #555; text-decoration: none; border-bottom: none;
         }
-        .note-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
-        .note-page .note-text p { color: #222; }
-        /* ========== 样式：镜鉴（篇章文章页 / 零言页） ========== */
-        .essay-page .note-text, .frag-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
-        .essay-page .note-text p, .frag-page .note-text p { color: #222; }
+
+        /* ===== 正文页（笔记 / 篇章 / 零言） ===== */
+        .note-page .note-text, .essay-page .note-text, .frag-page .note-text { max-width: 640px; margin: 0 auto; text-align: left; line-height: 1.9; }
+        .note-page .note-text p, .essay-page .note-text p, .frag-page .note-text p { color: #222; }
         .essay-page .note-text p { text-indent: 2em; }
-        /* ========== 样式：收录条目（原文 / 译 / 释），标签由CSS生成，不影响搜索与列表摘要 ========== */
+
+        /* ===== 收录条目：原文 / 译 / 释（标签由 CSS 生成，不影响搜索与列表摘要） ===== */
         .clip { margin: 0 0 14px; padding: 0 0 12px; border-bottom: 1px dashed #d4d4de; }
         .clip:last-child { border-bottom: none; }
         .clip .orig {
-            border-left: 3px solid #bbb; padding: 0 0 0 10px;
-            font-family: Georgia, "Times New Roman", serif; font-size: 16px;
-            line-height: 1.55; color: #1a1a1a; font-weight: bold;
+            border-left: 3px solid #bbb; padding: 0 0 0 10px; font-weight: bold; font-size: 16px;
+            font-family: Georgia, "Times New Roman", serif; line-height: 1.55; color: #1a1a1a;
         }
-       .clip .no { color: #999; margin-right: 6px; }
+        .clip .no { color: #999; margin-right: 6px; }
         .clip .tr { margin-top: 6px; font-size: 15px; line-height: 1.7; color: #222; }
         .clip .tr::before, .clip .ex summary::before {
-            display: inline-block; margin-right: 6px; padding: 0 6px;
-            border-radius: 4px; background: #aaa; color: #fff;
-            font-size: 12px; line-height: 18px; vertical-align: 1px; font-weight: normal;
+            display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 4px;
+            background: #aaa; color: #fff; font-size: 12px; line-height: 18px; vertical-align: 1px; font-weight: normal;
         }
         .clip .tr::before { content: '译'; }
-        /* 释：默认折叠，点“释 ▾”展开 */
         .clip .ex { margin-top: 6px; }
         .clip .ex summary { list-style: none; cursor: pointer; display: inline-block; color: #999; font-size: 12px; -webkit-tap-highlight-color: transparent; }
         .clip .ex summary::-webkit-details-marker { display: none; }
@@ -179,25 +121,24 @@
         .clip .ex[open] summary::after { content: ' ▴'; }
         .clip .ex-body { margin-top: 6px; font-size: 14px; line-height: 1.75; color: #555; }
         .clip .src { margin-top: 6px; font-size: 13px; color: #999; text-align: right; }
-        #searchBtn { filter: grayscale(1); opacity: .65; }
-        /* ========== 样式：可拖动滚动条 ========== */
-        /* 自定义可拖动滚动条（手机上系统滚动条无法拖动） */
+
+        /* ===== 可拖动滚动条（手机系统滚动条无法拖动，所以自己做） ===== */
         #sbTrack { position: fixed; top: 52px; right: 0; bottom: 0; width: 22px; z-index: 80; touch-action: none; display: none; }
         #sbThumb { position: absolute; top: 0; right: 3px; width: 6px; border-radius: 3px; background: rgba(90, 90, 110, .55); touch-action: none; cursor: pointer; transition: width .15s, background .15s; }
         #sbThumb::before { content: ''; position: absolute; top: 0; bottom: 0; left: -14px; right: -3px; }
         #sbThumb.drag { width: 10px; background: rgba(60, 60, 80, .8); }
-        @media (max-width: 600px) { #scroller { padding-top: 16px; } }
-        /* ========== 样式：圣经经文排版（板块二） ========== */
+
+        /* ===== 圣经经文排版 ===== */
         .vs { display: flex; align-items: flex-start; max-width: 640px; margin: 18px auto; text-align: left; line-height: 1.8; color: #666; }
         .vn { flex: none; white-space: nowrap; }
         .vb { flex: 1; min-width: 0; }
         .vb strong { color: #333; }
-        /* ========== 样式：段落间距（所有页面通用） ========== */
-        /* 段落间距备用：gap0 最紧，gap3 最松 */
+
+        /* ===== 段落间距（任意页面可加 class）：gap0 最紧，gap3 最松 ===== */
         .gap0 p { margin: 0 !important; }
-.gap1 p { margin: 0.3em 0 !important; }
-.gap2 p { margin: 0.6em 0 !important; }
-.gap3 p { margin: 1.5em 0 !important; }
+        .gap1 p { margin: 0.3em 0 !important; }
+        .gap2 p { margin: 0.6em 0 !important; }
+        .gap3 p { margin: 1.5em 0 !important; }
     </style>
 </head>
 <body>
@@ -221,11 +162,11 @@
         <a href="#other" data-page="other">圣经经文</a>
         <a href="#bible" data-page="bible">圣经软件下载</a>
         <a href="#notes" data-page="notes">随读笔记</a>
-        <a href="#collect" data-page="collect">镜鉴</a>
+        <a href="#collect" data-page="collect"><span class="cname"></span></a>
     </nav>
     <div id="scroller">
         <main>
-            <!-- ========== 板块一：主页（首页） ========== -->
+            <!-- 板块一：主页 -->
             <section class="page active" id="page-home">
                 <h1>Hello, World!</h1>
                 <p class="verse">【圣经·传道书12章1节】<br>你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
@@ -233,7 +174,6 @@
                 <p>希望有一天你会意识到这个世界比你想象的更神秘</p>
                 <figure>
                     <img src="field-5429112_640.jpg" alt="风景图片" loading="lazy">
-                    <figcaption></figcaption>
                 </figure>
                 <p>无论怎么看，都是无聊的一生。</p>
                 <p>生れて、すみません。</p>
@@ -248,18 +188,17 @@
                 <p>现在发生的一切在你出生之前就已经计划好了</p>
                 <p>真相將永遠改變你的人生</p>
                 <p>安らぎを君に</p>
-                
-                
-                <!-- 底部联系我模块 -->
-               <hr style="border: none; border-top: 1px solid #e0e0e8; max-width: 200px; margin: 36px auto;">
-<p style="font-size: 14px; line-height: 1.8;">
-    如果你有任何建议、问题，或者想与我交流，可以通过电子邮件联系我。<br>
-    smgxcxdl@163.com
-</p>
+                <hr style="border: none; border-top: 1px solid #e0e0e8; max-width: 200px; margin: 36px auto;">
+                <p style="font-size: 14px; line-height: 1.8;">
+                    如果你有任何建议、问题，或者想与我交流，可以通过电子邮件联系我。<br>
+                    smgxcxdl@163.com
+                </p>
             </section>
-            <!-- ========== 板块二：圣经经文 ========== -->
+
+            <!-- 板块二：圣经经文（内容由 manifest.json 的 other 载入） -->
             <div id="slot-other"></div>
-            <!-- ========== 板块三：圣经软件下载 ========== -->
+
+            <!-- 板块三：圣经软件下载 -->
             <section class="page" id="page-bible">
                 <h2>圣经</h2>
                 <p>浏览器打开下面的网站下载安装：</p>
@@ -267,49 +206,40 @@
                 <p>或</p>
                 <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
             </section>
-            <!-- ========== 板块四：随读笔记（笔记列表，列表由脚本自动生成） ========== -->
+
+            <!-- 板块四：随读笔记（列表由脚本自动生成，笔记内容由 manifest.json 的 notes 载入） -->
             <section class="page" id="page-notes">
                 <h2>随读笔记</h2>
                 <div id="noteList"></div>
-                <div id="noteResults"></div>
             </section>
-            <!-- ========== 板块四·笔记内容（下面每个 note-page 是一篇笔记，新增笔记复制一段即可，id 依次递增） ========== -->
             <div id="slot-notes"></div>
-            
-            
-            
-            
-            
-             
-             
-            
-             
-            <!-- ========== 板块五：镜鉴（入口页，两个部分：零言 / 篇章） ========== -->
+
+            <!-- 板块五：入口页（栏目名在下面 script 顶部的 COLLECT_NAME 里改） -->
             <section class="page" id="page-collect">
-                <h2>镜鉴</h2>
+                <h2 class="cname"></h2>
                 <a class="note-item" href="#fragments"><span class="nt">零言</span></a>
                 <a class="note-item" href="#essays"><span class="nt">篇章</span></a>
             </section>
-            <!-- ========== 镜鉴·零言（句子、段落，风格同“阅读切片”；新增一条复制一行 p，序号依次递增） ========== -->
+            <!-- 零言（内容由 manifest.json 的 fragments 载入） -->
             <div id="slot-fragments"></div>
-            <!-- ========== 镜鉴·篇章（文章列表，列表由脚本根据下面的 essay-page 自动生成） ========== -->
+            <!-- 篇章（列表由脚本自动生成，文章由 manifest.json 的 essays 载入） -->
             <section class="page" id="page-essays">
-                <a class="backlink" href="#collect">← 返回镜鉴</a>
+                <a class="backlink" href="#collect">← 返回<span class="cname"></span></a>
                 <h2>篇章</h2>
                 <div id="essayList"></div>
             </section>
-            <!-- ========== 镜鉴·篇章·文章内容（新增文章：复制下面整个 essay-page 段，id 依次递增 essay-2、essay-3…，改 data-title、标题和正文） ========== -->
             <div id="slot-essays"></div>
-            
-                        
-            
         </main>
     </div>
     <div id="sbTrack"><div id="sbThumb"></div></div>
     <button id="toTop" aria-label="回到顶部">↑</button>
     <script>
         (async function () {
-            /* ========== 脚本：加载 content/ 文件夹里的内容文件（清单见 manifest.json） ========== */
+            /* ★ 栏目名：想换名字，只改这一处 ★ */
+            const COLLECT_NAME = '镜鉴';
+            const SITE_NAME = document.title;
+
+            /* ===== 加载 manifest.json 里列出的内容文件 ===== */
             async function loadContent() {
                 let manifest;
                 try {
@@ -324,8 +254,7 @@
                 await Promise.all(Object.keys(manifest).map(async name => {
                     const slot = document.getElementById('slot-' + name);
                     if (!slot) return;
-                    const files = [].concat(manifest[name]);
-                    const texts = await Promise.all(files.map(f =>
+                    const texts = await Promise.all([].concat(manifest[name]).map(f =>
                         fetch(f, { cache: 'no-cache' })
                             .then(r => r.ok ? r.text() : Promise.reject(f))
                             .catch(() => '<!-- 加载失败：' + f + ' -->')));
@@ -334,97 +263,76 @@
             }
             await loadContent();
 
-            /* ========== 脚本：基础变量与侧边菜单开关 ========== */
+            /* 把栏目名填到所有 class="cname" 的位置（内容文件里也可以用 <span class="cname"></span>） */
+            document.querySelectorAll('.cname').forEach(el => { el.textContent = COLLECT_NAME; });
+
+            /* ===== 侧边菜单 ===== */
             const scroller = document.getElementById('scroller');
-            const menuBtn = document.getElementById('menuBtn');
             const menu = document.getElementById('menu');
             const overlay = document.getElementById('overlay');
             const topTitle = document.getElementById('topTitle');
             const toTop = document.getElementById('toTop');
             function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
             function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
-            menuBtn.addEventListener('click', openMenu);
+            document.getElementById('menuBtn').addEventListener('click', openMenu);
             overlay.addEventListener('click', closeMenu);
             menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
-            /* ========== 脚本：笔记列表自动生成 ========== */
-            const noteList = document.getElementById('noteList');
-            const notePages = document.querySelectorAll('.note-page');
-            if (notePages.length === 0) {
-                noteList.innerHTML = '<p class="note-empty">暂无笔记</p>';
-            } else {
-                notePages.forEach(sec => {
-                    const id = sec.id.replace('page-', '');
-                    const title = sec.getAttribute('data-title') || sec.querySelector('h2')?.textContent || '未命名笔记';
-                    const snippet = sec.querySelector('.note-text')?.textContent.trim().slice(0, 60) + '...';
+
+            /* ===== 列表自动生成（笔记 / 篇章） ===== */
+            function buildList(pageSelector, listId, emptyText, noTitle) {
+                const list = document.getElementById(listId);
+                const pages = document.querySelectorAll(pageSelector);
+                if (!pages.length) { list.innerHTML = '<p class="note-empty">' + emptyText + '</p>'; return; }
+                pages.forEach(sec => {
+                    const title = sec.getAttribute('data-title') || sec.querySelector('h2')?.textContent || noTitle;
+                    const snippet = (sec.querySelector('.note-text')?.textContent.trim().slice(0, 60) || '') + '...';
                     const a = document.createElement('a');
                     a.className = 'note-item';
-                    a.href = '#' + id;
+                    a.href = '#' + sec.id.replace('page-', '');
                     a.innerHTML = `<span class="nt">${title}</span><span class="ns">${snippet}</span>`;
-                    noteList.appendChild(a);
+                    list.appendChild(a);
                 });
             }
-            /* ========== 脚本：篇章列表自动生成 ========== */
-            const essayList = document.getElementById('essayList');
-            const essayPages = document.querySelectorAll('.essay-page');
-            if (essayPages.length === 0) {
-                essayList.innerHTML = '<p class="note-empty">暂无文章</p>';
-            } else {
-                essayPages.forEach(sec => {
-                    const id = sec.id.replace('page-', '');
-                    const title = sec.getAttribute('data-title') || sec.querySelector('h2')?.textContent || '未命名文章';
-                    const snippet = sec.querySelector('.note-text')?.textContent.trim().slice(0, 60) + '...';
-                    const a = document.createElement('a');
-                    a.className = 'note-item';
-                    a.href = '#' + id;
-                    a.innerHTML = `<span class="nt">${title}</span><span class="ns">${snippet}</span>`;
-                    essayList.appendChild(a);
-                });
-            }
-            /* ========== 脚本：页面切换（根据网址 # 显示对应板块） ========== */
+            buildList('.note-page', 'noteList', '暂无笔记', '未命名笔记');
+            buildList('.essay-page', 'essayList', '暂无文章', '未命名文章');
+
+            /* ===== 页面切换（根据网址 # 显示对应板块） ===== */
             let prevHash = '', notesScroll = 0, essaysScroll = 0;
             function showPage() {
                 const hash = location.hash.replace('#', '') || 'home';
                 if (prevHash === 'notes') notesScroll = scroller.scrollTop;
                 if (prevHash === 'essays') essaysScroll = scroller.scrollTop;
-                const targetId = 'page-' + hash;
-                const pages = document.querySelectorAll('.page');
                 let matched = false;
-                pages.forEach(p => {
-                    if (p.id === targetId) { p.classList.add('active'); matched = true; }
-                    else { p.classList.remove('active'); }
+                document.querySelectorAll('.page').forEach(p => {
+                    const on = p.id === 'page-' + hash;
+                    p.classList.toggle('active', on);
+                    if (on) matched = true;
                 });
-                if (!matched) { document.getElementById('page-home').classList.add('active'); }
-                const navLinks = menu.querySelectorAll('a');
-                let titleText = '昔日今日';
-                navLinks.forEach(a => {
-                    const inCollect = hash === 'essays' || hash === 'fragments' || hash.startsWith('essay-');
-                    const isCurrent = a.getAttribute('data-page') === hash
-                        || (hash.startsWith('note-') && a.getAttribute('data-page') === 'notes')
-                        || (inCollect && a.getAttribute('data-page') === 'collect');
+                if (!matched) document.getElementById('page-home').classList.add('active');
+                const inCollect = hash === 'essays' || hash === 'fragments' || hash.startsWith('essay-');
+                let titleText = SITE_NAME;
+                menu.querySelectorAll('a').forEach(a => {
+                    const page = a.getAttribute('data-page');
+                    const isCurrent = page === hash
+                        || (hash.startsWith('note-') && page === 'notes')
+                        || (inCollect && page === 'collect');
                     a.classList.toggle('current', isCurrent);
                     if (isCurrent) titleText = a.textContent;
                 });
-                if (hash === 'home') titleText = '昔日今日';
+                if (hash === 'home') titleText = SITE_NAME;
                 topTitle.textContent = titleText;
                 scroller.scrollTop = (hash === 'notes' && prevHash.startsWith('note-')) ? notesScroll
                     : (hash === 'essays' && prevHash.startsWith('essay-')) ? essaysScroll : 0;
                 prevHash = hash;
                 closeMenu();
-                // 切换页面时清除搜索高亮（搜索跳转除外）
-                if (!jumping) { clearMarks(); hits = []; cur = -1; updateCount(); }
+                if (!jumping) { clearMarks(); hits = []; cur = -1; updateCount(); }   // 切换页面时清除搜索高亮
             }
 
-            /* ============ 搜索功能 ============ */
-            const searchBtn = document.getElementById('searchBtn');
+            /* ===== 搜索 ===== */
             const searchBar = document.getElementById('searchBar');
             const q = document.getElementById('q');
             const countEl = document.getElementById('count');
-            const prevBtn = document.getElementById('prev');
-            const nextBtn = document.getElementById('next');
-            const closeBar = document.getElementById('closeBar');
-            let hits = [];
-            let cur = -1;
-            let jumping = false;
+            let hits = [], cur = -1, jumping = false;
 
             function clearMarks() {
                 scroller.querySelectorAll('mark.hit').forEach(m => {
@@ -433,36 +341,27 @@
                     parent.normalize();
                 });
             }
-
             function updateCount() {
                 if (!q.value.trim()) countEl.textContent = '';
                 else if (hits.length === 0) countEl.textContent = '无结果';
                 else countEl.textContent = (cur + 1) + '/' + hits.length;
             }
-
             function buildHits(keyword) {
                 clearMarks();
-                hits = [];
-                cur = -1;
+                hits = []; cur = -1;
                 if (!keyword) { updateCount(); return; }
                 const kw = keyword.toLowerCase();
-                const walker = document.createTreeWalker(
-                    scroller.querySelector('main'),
-                    NodeFilter.SHOW_TEXT,
-                    {
-                        acceptNode(node) {
-                            if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-                            const p = node.parentNode;
-                            if (p.closest('#noteList, #noteResults, script, style')) return NodeFilter.FILTER_REJECT;
-                            return NodeFilter.FILTER_ACCEPT;
-                        }
+                const walker = document.createTreeWalker(scroller.querySelector('main'), NodeFilter.SHOW_TEXT, {
+                    acceptNode(node) {
+                        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                        if (node.parentNode.closest('#noteList, #essayList, script, style')) return NodeFilter.FILTER_REJECT;
+                        return NodeFilter.FILTER_ACCEPT;
                     }
-                );
+                });
                 const nodes = [];
                 while (walker.nextNode()) nodes.push(walker.currentNode);
                 nodes.forEach(node => {
-                    const text = node.nodeValue;
-                    const lower = text.toLowerCase();
+                    const text = node.nodeValue, lower = text.toLowerCase();
                     let idx = lower.indexOf(kw);
                     if (idx === -1) return;
                     const frag = document.createDocumentFragment();
@@ -481,18 +380,15 @@
                     node.parentNode.replaceChild(frag, node);
                 });
             }
-
             function goTo(i) {
                 if (hits.length === 0) { updateCount(); return; }
                 if (cur >= 0 && hits[cur]) hits[cur].classList.remove('current');
                 cur = (i + hits.length) % hits.length;
                 const m = hits[cur];
                 m.classList.add('current');
-                // 命中词在折叠的“释”里时，自动展开
-                const det = m.closest('details');
+                const det = m.closest('details');            // 命中词在折叠的“释”里时自动展开
                 if (det) det.open = true;
-                // 命中词在其他页面时，先切换到那个页面
-                const page = m.closest('.page');
+                const page = m.closest('.page');             // 命中词在其他页面时先切换过去
                 if (page && !page.classList.contains('active')) {
                     jumping = true;
                     history.replaceState({ d: depth }, '', '#' + page.id.replace('page-', ''));
@@ -500,31 +396,26 @@
                     jumping = false;
                 }
                 const top = m.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
-                scroller.scrollTo({
-                    top: scroller.scrollTop + top - scroller.clientHeight / 3,
-                    behavior: 'smooth'
-                });
+                scroller.scrollTo({ top: scroller.scrollTop + top - scroller.clientHeight / 3, behavior: 'smooth' });
                 updateCount();
             }
-
             function openSearch() {
                 searchBar.classList.add('open');
-                q.focus();
-                q.select();
+                q.focus(); q.select();
                 if (q.value.trim() && hits.length === 0) { buildHits(q.value.trim()); goTo(0); }
             }
             function closeSearch() {
                 searchBar.classList.remove('open');
                 clearMarks();
-                hits = [];
-                cur = -1;
+                hits = []; cur = -1;
                 q.value = '';
                 updateCount();
                 q.blur();
             }
-
-            searchBtn.addEventListener('click', openSearch);
-            closeBar.addEventListener('click', closeSearch);
+            document.getElementById('searchBtn').addEventListener('click', openSearch);
+            document.getElementById('closeBar').addEventListener('click', closeSearch);
+            document.getElementById('next').addEventListener('click', () => goTo(cur + 1));
+            document.getElementById('prev').addEventListener('click', () => goTo(cur - 1));
             q.addEventListener('input', () => {
                 buildHits(q.value.trim());
                 if (hits.length) goTo(0); else updateCount();
@@ -538,11 +429,8 @@
                     closeSearch();
                 }
             });
-            nextBtn.addEventListener('click', () => goTo(cur + 1));
-            prevBtn.addEventListener('click', () => goTo(cur - 1));
-            /* ============ 搜索功能结束 ============ */
 
-            /* ============ 可拖动滚动条 ============ */
+            /* ===== 可拖动滚动条 ===== */
             const track = document.getElementById('sbTrack'), thumb = document.getElementById('sbThumb');
             function updateThumb() {
                 const ch = scroller.clientHeight, sh = scroller.scrollHeight;
@@ -550,9 +438,8 @@
                 track.style.display = 'block';
                 const th = track.clientHeight;
                 const h = Math.max(40, th * ch / sh);
-                const top = (th - h) * scroller.scrollTop / (sh - ch);
                 thumb.style.height = h + 'px';
-                thumb.style.transform = 'translateY(' + top + 'px)';
+                thumb.style.transform = 'translateY(' + (th - h) * scroller.scrollTop / (sh - ch) + 'px)';
             }
             scroller.addEventListener('scroll', updateThumb);
             window.addEventListener('resize', updateThumb);
@@ -583,11 +470,8 @@
                 const r = thumb.getBoundingClientRect();
                 scroller.scrollBy({ top: (e.clientY < r.top ? -1 : 1) * scroller.clientHeight * 0.9, behavior: 'smooth' });
             });
-            /* ============ 滚动条结束 ============ */
 
-            /* ========== 脚本：启动与回到顶部按钮 ========== */
-            /* ========== 脚本：返回键逻辑（主页是返回的最后一步，再返回就退出网站） ========== */
-            // 浏览器历史始终保持为：主页 → 当前页面所在的层级路径，菜单跳转不会堆积历史
+            /* ===== 返回键逻辑：历史始终是 主页 → 当前页所在的层级路径，菜单跳转不会堆积历史 ===== */
             let depth = 0, pending = null;
             function curHash() {
                 const h = location.hash.replace('#', '') || 'home';
@@ -609,17 +493,17 @@
                 showPage();
             }
             function navigate(target) {
-                const cur = curHash();
-                if (!document.getElementById('page-' + target) || target === cur) { closeMenu(); return; }
+                const here = curHash();
+                if (!document.getElementById('page-' + target) || target === here) { closeMenu(); return; }
                 if (target === 'home') {
                     if (depth > 0) history.go(-depth);
                     else { history.replaceState({ d: 0 }, '', location.pathname + location.search); showPage(); }
                     return;
                 }
-                if (parentOf(target) === cur) { pushPath([target]); return; }          // 进入下一层
-                if (parentOf(cur) === target && depth > 0) { history.back(); return; } // 返回上一层
+                if (parentOf(target) === here) { pushPath([target]); return; }          // 进入下一层
+                if (parentOf(here) === target && depth > 0) { history.back(); return; } // 返回上一层
                 if (depth === 0) { pushPath(pathOf(target)); return; }
-                pending = pathOf(target);                                              // 跳到别的板块：先退回主页再进入
+                pending = pathOf(target);                                               // 跳到别的板块：先退回主页再进入
                 history.go(-depth);
             }
             window.addEventListener('popstate', e => {
@@ -635,8 +519,7 @@
             });
             try {
                 if (history.state && typeof history.state.d === 'number') {
-                    // 刷新页面：历史记录已经是规范结构，直接沿用，避免刷新一次多叠一层
-                    depth = history.state.d;
+                    depth = history.state.d;      // 刷新页面：沿用已有历史，避免多叠一层
                     showPage();
                 } else {
                     const initPath = pathOf(curHash());
@@ -644,12 +527,10 @@
                     if (initPath.length) pushPath(initPath); else showPage();
                 }
             } catch (err) { showPage(); }
-            scroller.addEventListener('scroll', () => {
-                toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none';
-            });
-            toTop.addEventListener('click', () => {
-                scroller.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+
+            /* ===== 回到顶部按钮 ===== */
+            scroller.addEventListener('scroll', () => { toTop.style.display = scroller.scrollTop > 200 ? 'block' : 'none'; });
+            toTop.addEventListener('click', () => scroller.scrollTo({ top: 0, behavior: 'smooth' }));
         })();
     </script>
 </body>
