@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>昔日今日</title>
+    <!-- ★★★ 名称设置：网站里会重复出现的名字都在这里，想改名只改引号里的字，其它地方自动跟着变 ★★★ -->
+    <script>
+        const NAMES = {
+            site:      '昔日今日',      // 网站名（浏览器标签页 + 顶部栏标题）
+            home:      '主页',          // 菜单：主页
+            other:     '圣经经文',      // 菜单：圣经经文
+            bible:     '圣经软件下载',  // 菜单：圣经软件下载
+            notes:     '随读笔记',      // 菜单 + 笔记列表页标题
+            collect:   '镜鉴',          // 菜单 + 入口页标题 + “← 返回镜鉴”
+            fragments: '零言',          // 入口页里的“零言”
+            essays:    '篇章'           // 入口页里的“篇章” + 篇章页标题
+        };
+        document.title = NAMES.site;
+    </script>
     <style>
         /* ===== 整体 ===== */
         body { text-align: center; padding: 0; margin: 0; font-family: sans-serif; background: #f4f4f9; overflow: hidden; }
@@ -145,7 +158,7 @@
     <div id="topbar">
         <button class="iconbtn" id="menuBtn" aria-label="菜单">☰</button>
         <a class="iconbtn" id="homeBtn" href="#home" aria-label="主页">首页</a>
-        <span id="topTitle">昔日今日</span>
+        <span id="topTitle" data-name="site"></span>
         <button class="iconbtn" id="searchBtn" aria-label="搜索">🔍</button>
     </div>
     <div id="searchBar">
@@ -158,15 +171,15 @@
     <div id="overlay"></div>
     <nav id="menu">
         <div class="menuhead">菜单</div>
-        <a href="#home" data-page="home">主页</a>
-        <a href="#other" data-page="other">圣经经文</a>
-        <a href="#bible" data-page="bible">圣经软件下载</a>
-        <a href="#notes" data-page="notes">随读笔记</a>
-        <a href="#collect" data-page="collect"><span class="cname"></span></a>
+        <a href="#home" data-page="home" data-name="home"></a>
+        <a href="#other" data-page="other" data-name="other"></a>
+        <a href="#bible" data-page="bible" data-name="bible"></a>
+        <a href="#notes" data-page="notes" data-name="notes"></a>
+        <a href="#collect" data-page="collect" data-name="collect"></a>
     </nav>
     <div id="scroller">
         <main>
-            <!-- 板块一：主页 -->
+            <!-- ========== 板块一：主页（首页） ========== -->
             <section class="page active" id="page-home">
                 <h1>Hello, World!</h1>
                 <p class="verse">【圣经·传道书12章1节】<br>你趁着年幼，衰败的日子尚未来到，就是你所说，我毫无喜乐的那些年日未曾临近之先，当记念造你的主。</p>
@@ -188,6 +201,7 @@
                 <p>现在发生的一切在你出生之前就已经计划好了</p>
                 <p>真相將永遠改變你的人生</p>
                 <p>安らぎを君に</p>
+                <!-- 底部联系我模块 -->
                 <hr style="border: none; border-top: 1px solid #e0e0e8; max-width: 200px; margin: 36px auto;">
                 <p style="font-size: 14px; line-height: 1.8;">
                     如果你有任何建议、问题，或者想与我交流，可以通过电子邮件联系我。<br>
@@ -195,10 +209,10 @@
                 </p>
             </section>
 
-            <!-- 板块二：圣经经文（内容由 manifest.json 的 other 载入） -->
+            <!-- ========== 板块二：圣经经文 ========== -->
             <div id="slot-other"></div>
 
-            <!-- 板块三：圣经软件下载 -->
+            <!-- ========== 板块三：圣经软件下载 ========== -->
             <section class="page" id="page-bible">
                 <h2>圣经</h2>
                 <p>浏览器打开下面的网站下载安装：</p>
@@ -207,27 +221,29 @@
                 <p><a href="https://sjxz2.com" target="_blank" rel="noopener">https://sjxz2.com</a></p>
             </section>
 
-            <!-- 板块四：随读笔记（列表由脚本自动生成，笔记内容由 manifest.json 的 notes 载入） -->
+            <!-- ========== 板块四：随读笔记（笔记列表，列表由脚本自动生成） ========== -->
             <section class="page" id="page-notes">
-                <h2>随读笔记</h2>
+                <h2 data-name="notes"></h2>
                 <div id="noteList"></div>
             </section>
+            <!-- ========== 板块四·笔记内容（下面每个 note-page 是一篇笔记，新增笔记复制一段即可，id 依次递增） ========== -->
             <div id="slot-notes"></div>
 
-            <!-- 板块五：入口页（栏目名在下面 script 顶部的 COLLECT_NAME 里改） -->
+            <!-- ========== 板块五：镜鉴（入口页，两个部分：零言 / 篇章） ========== -->
             <section class="page" id="page-collect">
-                <h2 class="cname"></h2>
-                <a class="note-item" href="#fragments"><span class="nt">零言</span></a>
-                <a class="note-item" href="#essays"><span class="nt">篇章</span></a>
+                <h2 data-name="collect"></h2>
+                <a class="note-item" href="#fragments"><span class="nt" data-name="fragments"></span></a>
+                <a class="note-item" href="#essays"><span class="nt" data-name="essays"></span></a>
             </section>
-            <!-- 零言（内容由 manifest.json 的 fragments 载入） -->
+            <!-- ========== 镜鉴·零言（句子、段落，风格同“阅读切片”；新增一条复制一行 p，序号依次递增） ========== -->
             <div id="slot-fragments"></div>
-            <!-- 篇章（列表由脚本自动生成，文章由 manifest.json 的 essays 载入） -->
+            <!-- ========== 镜鉴·篇章（文章列表，列表由脚本根据下面的 essay-page 自动生成） ========== -->
             <section class="page" id="page-essays">
-                <a class="backlink" href="#collect">← 返回<span class="cname"></span></a>
-                <h2>篇章</h2>
+                <a class="backlink" href="#collect">← 返回<span data-name="collect"></span></a>
+                <h2 data-name="essays"></h2>
                 <div id="essayList"></div>
             </section>
+            <!-- ========== 镜鉴·篇章·文章内容（新增文章：复制下面整个 essay-page 段，id 依次递增 essay-2、essay-3…，改 data-title、标题和正文） ========== -->
             <div id="slot-essays"></div>
         </main>
     </div>
@@ -235,9 +251,12 @@
     <button id="toTop" aria-label="回到顶部">↑</button>
     <script>
         (async function () {
-            /* ★ 栏目名：想换名字，只改这一处 ★ */
-            const COLLECT_NAME = '镜鉴';
-            const SITE_NAME = document.title;
+            const SITE_NAME = NAMES.site;
+            /* 把文件顶部 NAMES 里的名字填到所有带 data-name 的位置（内容文件里也可以用 <span data-name="collect"></span>） */
+            function applyNames() {
+                document.querySelectorAll('[data-name]').forEach(el => { el.textContent = NAMES[el.dataset.name] || ''; });
+            }
+            applyNames();
 
             /* ===== 加载 manifest.json 里列出的内容文件 ===== */
             async function loadContent() {
@@ -263,8 +282,7 @@
             }
             await loadContent();
 
-            /* 把栏目名填到所有 class="cname" 的位置（内容文件里也可以用 <span class="cname"></span>） */
-            document.querySelectorAll('.cname').forEach(el => { el.textContent = COLLECT_NAME; });
+            applyNames();   // 内容文件载入后再填一次
 
             /* ===== 侧边菜单 ===== */
             const scroller = document.getElementById('scroller');
