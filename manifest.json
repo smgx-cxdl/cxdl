@@ -1,6 +1,6 @@
 {
   "other": [
-    "verses.html"
+    "圣经经文.html"
   ],
   "notes": [
     "电影名.html",
@@ -15,12 +15,12 @@
     "note-10.html"
   ],
   "fragments": [
-    "fragments.html"
+    "零言.html"
   ],
   "essays": [
-    "essay-1.html",
-    "essay-2.html",
-    "essay-3.html",
-    "essay-4.html"
+    "王怡文库.html",
+    "警告未归正的人.html",
+    "圣经综合解读.html",
+    "摘录.html"
   ]
 }
