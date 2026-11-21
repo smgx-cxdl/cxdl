@@ -309,11 +309,11 @@
     <button id="toTop" aria-label="回到顶部">↑</button>
     <script>
         (async function () {
-            /* ========== 脚本：加载 content/ 文件夹里的内容文件（清单见 content/manifest.json） ========== */
+            /* ========== 脚本：加载 content/ 文件夹里的内容文件（清单见 manifest.json） ========== */
             async function loadContent() {
                 let manifest;
                 try {
-                    const r = await fetch('content/manifest.json', { cache: 'no-cache' });
+                    const r = await fetch('manifest.json', { cache: 'no-cache' });
                     if (!r.ok) throw new Error(r.status);
                     manifest = await r.json();
                 } catch (err) {

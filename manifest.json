@@ -1,0 +1,26 @@
+{
+  "other": [
+    "verses.html"
+  ],
+  "notes": [
+    "note-1.html",
+    "note-2.html",
+    "note-3.html",
+    "note-4.html",
+    "note-5.html",
+    "note-6.html",
+    "note-7.html",
+    "note-8.html",
+    "note-9.html",
+    "note-10.html"
+  ],
+  "fragments": [
+    "fragments.html"
+  ],
+  "essays": [
+    "essay-1.html",
+    "essay-2.html",
+    "essay-3.html",
+    "essay-4.html"
+  ]
+}
